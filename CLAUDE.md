@@ -6,8 +6,10 @@
      See the guide at docs/workflow-guide.html for full documentation. -->
 
 **Project:** [YOUR PROJECT NAME]
-**Institution:** [YOUR INSTITUTION]
+**Institution:** UC Berkeley, Haas School of Business
 **Branch:** main
+
+**Executive Education decks** use `beamerthemeUCBerkeley.sty` (in `Preambles/`) — Georgia/Open Sans fonts, Berkeley Blue/Medalist Gold palette, blue diagonal footer with UC Berkeley wordmark. See `.claude/rules/exec-ed-slides.md` for full style guide.
 
 ---
 
@@ -99,21 +101,26 @@ python scripts/quality_score.py Quarto/file.qmd
 
 ---
 
-<!-- CUSTOMIZE: Replace the example entries below with your own
-     Beamer environments and Quarto CSS classes. These are examples
-     from the original project — delete them and add yours. -->
-
 ## Beamer Custom Environments
 
-| Environment       | Effect        | Use Case       |
-|-------------------|---------------|----------------|
-| `[your-env]`      | [Description] | [When to use]  |
+### UC Berkeley Executive Education (`beamerthemeUCBerkeley.sty`)
 
-<!-- Example entries (delete and replace with yours):
-| `keybox` | Gold background box | Key points |
-| `highlightbox` | Gold left-accent box | Highlights |
-| `definitionbox[Title]` | Blue-bordered titled box | Formal definitions |
--->
+See `.claude/rules/exec-ed-slides.md` for full style guide.
+
+**Colors:** `BerkeleyBlue` (#003262), `Medalist` (#C4820E), `FoundersRock` (#3B7EA1), `CaliforniaGold` (#FDB515), `BerkeleyTableGold`, `BerkeleyTableBlue1/2`
+
+**Custom Commands:**
+
+| Command | Effect | Use Case |
+|---------|--------|----------|
+| `\smallframetitle` | Smaller bold title, higher on slide | Content-heavy slides |
+| `\normalframetitle` | Large medium-weight title (default) | Standard slides |
+| `\tableheadrow` | Gold background row | First row of tables |
+| `\tableheadcol{text}` | White bold column header | Table headers |
+
+### Academic Presentations
+
+<!-- Add your academic Beamer theme details here when ready -->
 
 ## Quarto CSS Classes
 
