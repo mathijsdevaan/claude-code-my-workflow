@@ -1,25 +1,24 @@
-# CLAUDE.MD -- Academic Project Development with Claude Code
+# CLAUDE.MD — Academic Project Development with Claude Code
 
-<!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
-     Customize Beamer environments and CSS classes for your theme.
-     Keep this file under ~150 lines — Claude loads it every session.
-     See the guide at docs/workflow-guide.html for full documentation. -->
+<!-- HOW TO USE: This file is the starting template. When you copy this repo for a new
+     project, replace the [BRACKETED PLACEHOLDERS] below, pick ONE "Current State"
+     variant and delete the others, and set the **Slide style** declaration.
+     See templates/new-project-checklist.md for the full startup procedure.
+     Keep this file under ~150 lines — Claude loads it every session. -->
 
-**Project:** [YOUR PROJECT NAME]
+**Project:** [Project name — replace when copying this template for a new project]
 **Institution:** UC Berkeley, Haas School of Business
-**Branch:** main
-
-**Executive Education decks** use `beamerthemeUCBerkeley.sty` (in `Preambles/`) — Georgia/Open Sans fonts, Berkeley Blue/Medalist Gold palette, blue diagonal footer with UC Berkeley wordmark. See `.claude/rules/exec-ed-slides.md` for full style guide.
+**Slide style:** [teaching | academic — pick one; determines theme + conventions]
 
 ---
 
 ## Core Principles
 
-- **Plan first** -- enter plan mode before non-trivial tasks; save plans to `quality_reports/plans/`
-- **Verify after** -- compile/render and confirm output at the end of every task
-- **Single source of truth** -- Beamer `.tex` is authoritative; Quarto `.qmd` derives from it
-- **Quality gates** -- nothing ships below 80/100
-- **[LEARN] tags** -- when corrected, save `[LEARN:category] wrong → right` to MEMORY.md
+- **Plan first** — enter plan mode before non-trivial tasks; save plans to `quality_reports/plans/`
+- **Verify after** — compile/render and confirm output at the end of every task
+- **Single source of truth** — Beamer `.tex` is authoritative for slide decks
+- **Quality gates** — nothing ships below 80/100
+- **[LEARN] tags** — when corrected, save `[LEARN:category] wrong → right` to MEMORY.md
 
 ---
 
@@ -31,15 +30,13 @@
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib        # Centralized bibliography
 ├── Figures/                     # Figures and images
-├── Preambles/header.tex         # LaTeX headers
+├── Preambles/                   # LaTeX headers + Beamer themes
 ├── Slides/                      # Beamer .tex files
-├── Quarto/                      # RevealJS .qmd files + theme
-├── docs/                        # GitHub Pages (auto-generated)
 ├── scripts/                     # Utility scripts + R code
 ├── quality_reports/             # Plans, session logs, merge reports
 ├── explorations/                # Research sandbox (see rules)
-├── templates/                   # Session log, quality report templates
-└── master_supporting_docs/      # Papers and existing slides
+├── templates/                   # Session log, project checklist, skill templates
+└── references/                  # Reference papers and decks
 ```
 
 ---
@@ -53,11 +50,8 @@ BIBINPUTS=..:$BIBINPUTS bibtex file
 TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
 TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
 
-# Deploy Quarto to GitHub Pages
-./scripts/sync_to_docs.sh LectureN
-
 # Quality score
-python scripts/quality_score.py Quarto/file.qmd
+python scripts/quality_score.py Slides/file.tex
 ```
 
 ---
@@ -77,15 +71,11 @@ python scripts/quality_score.py Quarto/file.qmd
 | Command | What It Does |
 |---------|-------------|
 | `/compile-latex [file]` | 3-pass XeLaTeX + bibtex |
-| `/deploy [LectureN]` | Render Quarto + sync to docs/ |
-| `/extract-tikz [LectureN]` | TikZ → PDF → SVG |
 | `/proofread [file]` | Grammar/typo/overflow review |
 | `/visual-audit [file]` | Slide layout audit |
 | `/pedagogy-review [file]` | Narrative, notation, pacing review |
 | `/review-r [file]` | R code quality review |
-| `/qa-quarto [LectureN]` | Adversarial Quarto vs Beamer QA |
 | `/slide-excellence [file]` | Combined multi-agent review |
-| `/translate-to-quarto [file]` | Beamer → Quarto translation |
 | `/validate-bib` | Cross-reference citations |
 | `/devils-advocate` | Challenge slide design |
 | `/create-lecture` | Full lecture creation |
@@ -95,49 +85,86 @@ python scripts/quality_score.py Quarto/file.qmd
 | `/interview-me [topic]` | Interactive research interview |
 | `/review-paper [file]` | Manuscript review |
 | `/data-analysis [dataset]` | End-to-end R analysis |
+| `/preregistration` | Scaffold aspredicted.org preregistration |
+| `/rct-toolkit` | RCT analysis starter (fixest + modelsummary) |
+| `/revise-resubmit` | R&R response tracker + cover letter |
 | `/learn [skill-name]` | Extract discovery into persistent skill |
 | `/context-status` | Show session health + context usage |
 | `/deep-audit` | Repository-wide consistency audit |
 
 ---
 
-## Beamer Custom Environments
+## Beamer Theme System
 
-### UC Berkeley Executive Education (`beamerthemeUCBerkeley.sty`)
+Two themes available in `Preambles/`. The `**Slide style**` declaration at the top
+of this file determines which one Claude uses for slide-related work.
 
-See `.claude/rules/exec-ed-slides.md` for full style guide.
+### Teaching (`beamerthemeUCBerkeleyTeaching.sty`)
 
-**Colors:** `BerkeleyBlue` (#003262), `Medalist` (#C4820E), `FoundersRock` (#3B7EA1), `CaliforniaGold` (#FDB515), `BerkeleyTableGold`, `BerkeleyTableBlue1/2`
+For executive education and MBA lectures. Berkeley-branded, sparse practitioner style.
+Full conventions in `.claude/rules/teaching-slides.md`.
+
+**Colors:** `BerkeleyBlue` (#003262), `Medalist` (#C4820E), `FoundersRock`, `CaliforniaGold`
 
 **Custom Commands:**
 
 | Command | Effect | Use Case |
 |---------|--------|----------|
-| `\smallframetitle` | Smaller bold title, higher on slide | Content-heavy slides |
-| `\normalframetitle` | Large medium-weight title (default) | Standard slides |
+| `\smallframetitle` | Smaller bold title | Content-heavy slides |
+| `\normalframetitle` | Large title (default) | Standard slides |
 | `\tableheadrow` | Gold background row | First row of tables |
 | `\tableheadcol{text}` | White bold column header | Table headers |
 
-### Academic Presentations
+### Academic (`beamerthemeUCBerkeleyAcademic.sty`)
 
-<!-- Add your academic Beamer theme details here when ready -->
+For seminars, conference talks, and job talks. Dense, citation-heavy, modern sans-serif
+styling with dark red title bars and charcoal footer. Metropolis-based.
+Full conventions in `.claude/rules/academic-slides.md`.
 
-## Quarto CSS Classes
+**Colors:** `AccentRed` (#A12830), `FooterGray` (#3F3F3F), `OliveRule` (#9B8B5A), `CiteGray`
 
-| Class              | Effect        | Use Case       |
-|--------------------|---------------|----------------|
-| `[.your-class]`    | [Description] | [When to use]  |
+**Custom Commands:**
 
-<!-- Example entries (delete and replace with yours):
-| `.smaller` | 85% font | Dense content slides |
-| `.positive` | Green bold | Good annotations |
--->
+| Command | Effect | Use Case |
+|---------|--------|----------|
+| `\cit{Author, Year}` | Inline gray citation | Dense reference annotation |
+| `\largeframetitle` | Larger title | Section-intro slides |
+| `\smallframetitle` | Smaller title (default) | Content-dense slides |
 
 ---
 
-## Current Project State
+## Current State
 
-| Lecture | Beamer | Quarto | Key Content |
-|---------|--------|--------|-------------|
-| 1: [Topic] | `Lecture01_Topic.tex` | `Lecture1_Topic.qmd` | [Brief description] |
-| 2: [Topic] | `Lecture02_Topic.tex` | -- | [Brief description] |
+<!-- At project start: uncomment ONE variant matching this project's type
+     (research / MBA course / exec ed session), fill it in, delete the others. -->
+
+<!-- RESEARCH PROJECT:
+**Phase:** [idea / data / analysis / drafting / R&R / published]
+**Target venue:** [journal]
+**Due:** [deadline]
+**Active tasks:**
+- [task 1]
+- [task 2]
+
+**Key files:**
+- Main draft: paper/main.tex
+- Analysis: code/03_analysis.R
+- Preregistration: rnr/preregistration.md (if RCT)
+-->
+
+<!-- MBA COURSE:
+**Course:** [course code, term]
+**Duration:** 14 × 2hr lectures, Aug–Oct
+
+| # | Topic | Beamer file | Status | Next update |
+|---|-------|-------------|--------|-------------|
+| 1 |       |             |        |             |
+| 2 |       |             |        |             |
+-->
+
+<!-- EXEC ED SESSION:
+**Client:** [company], [date]
+**Audience:** [description, approx size]
+**Focus:** [one-sentence theme]
+**Deck:** session.tex
+-->

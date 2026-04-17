@@ -1,0 +1,87 @@
+#!/bin/bash
+# Pre-commit hook: block large files and common data formats
+#
+# Blocks:
+#   - Any staged file > 50 MB
+#   - Any .RData, .rds, .dta file (regardless of size — almost always analysis data)
+#   - Any .csv file > 10 MB
+#
+# Override with: git commit --no-verify
+#
+# Install: set `git config core.hooksPath scripts/git-hooks` in each project repo.
+# See templates/new-project-checklist.md for full setup.
+
+set -e
+
+MAX_SIZE_BYTES=$((50 * 1024 * 1024))   # 50 MB
+MAX_CSV_BYTES=$((10 * 1024 * 1024))    # 10 MB
+
+# Patterns that are blocked regardless of size
+BLOCKED_EXTENSIONS_ALWAYS="RData rds dta sav zsav"
+
+# Get staged files (not deletions)
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ -z "$staged" ]; then
+    exit 0
+fi
+
+violations=""
+
+while IFS= read -r file; do
+    # Skip if file no longer exists (shouldn't happen with --diff-filter but safe)
+    [ ! -f "$file" ] && continue
+
+    # File size in bytes (portable between macOS and Linux)
+    if stat -f%z "$file" >/dev/null 2>&1; then
+        size=$(stat -f%z "$file")   # macOS / BSD
+    else
+        size=$(stat -c%s "$file")   # GNU / Linux
+    fi
+
+    # Extension (lowercase)
+    ext="${file##*.}"
+    ext_lower=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+
+    # Check blocked extensions (always, regardless of size)
+    for bad_ext in $BLOCKED_EXTENSIONS_ALWAYS; do
+        if [ "$ext_lower" = "$(echo "$bad_ext" | tr '[:upper:]' '[:lower:]')" ]; then
+            violations="$violations\n  $file  (.$ext — analysis data file, always blocked)"
+            continue 2
+        fi
+    done
+
+    # CSV: larger threshold
+    if [ "$ext_lower" = "csv" ] && [ "$size" -gt "$MAX_CSV_BYTES" ]; then
+        size_mb=$((size / 1024 / 1024))
+        violations="$violations\n  $file  (${size_mb} MB .csv — exceeds 10 MB limit)"
+        continue
+    fi
+
+    # General size limit for everything else
+    if [ "$size" -gt "$MAX_SIZE_BYTES" ]; then
+        size_mb=$((size / 1024 / 1024))
+        violations="$violations\n  $file  (${size_mb} MB — exceeds 50 MB limit)"
+    fi
+done <<< "$staged"
+
+if [ -n "$violations" ]; then
+    echo "============================================================"
+    echo "COMMIT BLOCKED: large files or data formats staged"
+    echo "============================================================"
+    echo -e "$violations"
+    echo ""
+    echo "These files are likely analysis data or large binaries that"
+    echo "do not belong in git history. Once committed and pushed, data"
+    echo "can be difficult to remove from remote repositories."
+    echo ""
+    echo "Options:"
+    echo "  1. Unstage with: git reset HEAD <file>"
+    echo "  2. Add to .gitignore, then: git reset HEAD <file>"
+    echo "  3. If you are CERTAIN this should be committed:"
+    echo "       git commit --no-verify"
+    echo ""
+    exit 1
+fi
+
+exit 0

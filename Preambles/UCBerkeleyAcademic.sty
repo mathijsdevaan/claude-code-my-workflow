@@ -1,0 +1,160 @@
+% beamerthemeUCBerkeleyAcademic.sty
+% For academic presentations: seminars, conference talks, job talks
+% Based on Metropolis with heavy customization
+% Style reference: La Forgia, Paris & Shi presentation style
+%
+% Usage in a document:
+%   \PassOptionsToPackage{table}{xcolor}
+%   \documentclass[aspectratio=169,10pt]{beamer}
+%   \usetheme[progressbar=none,numbering=none,block=fill]{metropolis}
+%   \usepackage{UCBerkeleyAcademic}
+%
+% (Load AFTER \usetheme{metropolis} — this overrides metropolis defaults.)
+
+\ProvidesPackage{UCBerkeleyAcademic}
+
+\RequirePackage{fontspec}
+\setsansfont[Scale=MatchLowercase]{Fira Sans}  % install Fira Sans if not present
+\setmainfont{Fira Sans}
+
+\RequirePackage{booktabs}
+\RequirePackage{amsmath,amssymb}
+
+% --- Color palette ---
+\definecolor{AccentRed}{HTML}{A12830}       % frame title bars, accent rules
+\definecolor{AccentRedDark}{HTML}{811F25}   % darker shade
+\definecolor{FooterGray}{HTML}{3F3F3F}      % charcoal footer bar
+\definecolor{OliveRule}{HTML}{9B8B5A}       % thin olive divider on section slides
+\definecolor{CiteGray}{HTML}{7F7F7F}        % inline citations
+\definecolor{BodyBlack}{HTML}{1A1A1A}
+
+% --- Beamer color overrides ---
+\setbeamercolor{normal text}{fg=BodyBlack,bg=white}
+\setbeamercolor{alerted text}{fg=AccentRed}
+\setbeamercolor{structure}{fg=AccentRed}
+\setbeamercolor{frametitle}{bg=white,fg=BodyBlack}
+\setbeamercolor{title separator}{fg=AccentRed}
+\setbeamercolor{progress bar}{fg=AccentRed,bg=AccentRed!30}
+\setbeamercolor{footline}{bg=FooterGray,fg=white}
+
+% --- Frame title: black text on white, with full-width red rule below ---
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \vspace{0.5em}%
+  \begin{beamercolorbox}[wd=\paperwidth,sep=0.3em,leftskip=0.7em]{frametitle}%
+    \strut\usebeamerfont{frametitle}\insertframetitle\strut%
+  \end{beamercolorbox}%
+  {\color{AccentRed}\hrule height 0.6pt}%
+}
+\setbeamerfont{frametitle}{family=\sffamily,series=\bfseries,size=\normalsize}
+
+% --- Footer: three-column charcoal bar (author | title | page) ---
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \hbox{%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.4ex,dp=1ex,leftskip=0.8em]{footline}%
+      \tiny\insertshortauthor%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.34\paperwidth,ht=2.4ex,dp=1ex,center]{footline}%
+      \tiny\insertshorttitle%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.4ex,dp=1ex,right,rightskip=0.8em]{footline}%
+      \tiny\insertframenumber%
+    \end{beamercolorbox}%
+  }%
+}
+
+% --- Title slide: use \titleslide{title}{authors_tabular}{venue_and_date} ---
+%
+% For ONE author:
+%   \titleslide{Paper Title: Evidence from Hospitals}
+%               {Mathijs de Vaan \\ \small UC Berkeley, Haas}
+%               {OrgSci Conference \textbullet\ April 2026}
+%
+% For MULTIPLE authors (side-by-side columns):
+%   \titleslide{Paper Title: Evidence from Hospitals}
+%               {\begin{tabular}{ccc}
+%                 Ambar La Forgia & Julia Paris & Maggie Shi \\
+%                 \small UC Berkeley, Haas & \small UC Berkeley, Econ & \small UChicago
+%                \end{tabular}}
+%               {OrgSci Conference \textbullet\ April 2026}
+%
+% Place \titleslide as the first frame of the document, BEFORE \begin{frame}...
+\newcommand{\titleslide}[3]{%
+  {\setbeamertemplate{footline}{}%
+  \begin{frame}[plain]%
+    \vspace*{0.15\paperheight}%
+    \begin{center}%
+      {\large\bfseries #1\par}%
+      \vspace{0.8em}\par%
+      {\textcolor{AccentRed}{\rule{0.78\paperwidth}{0.8pt}}\par}%
+      \vspace{1.5em}\par%
+      #2\par%
+      \vspace{1.8em}\par%
+      {\small\bfseries #3\par}%
+    \end{center}%
+  \end{frame}}%
+}
+
+% Fallback: Metropolis's default \maketitle still works, but produces a less
+% polished title. Prefer \titleslide above. If \maketitle is used, supply a
+% minimal override so it at least doesn't mangle the author.
+\setbeamertemplate{title page}{%
+  \vspace*{0.15\paperheight}
+  \begin{center}
+    {\large\bfseries\inserttitle\par}
+    \ifx\insertsubtitle\@empty\else\vspace{0.3em}{\normalsize\insertsubtitle\par}\fi
+    \vspace{0.8em}
+    \textcolor{AccentRed}{\rule{0.78\paperwidth}{0.8pt}}
+    \vspace{1.5em}
+    {\normalsize\insertauthor\par}
+    \vspace{0.5em}
+    {\small\insertinstitute\par}
+    \vspace{1.5em}
+    {\small\bfseries\insertdate\par}
+  \end{center}
+}
+
+% --- Section divider: minimal, bold title, olive rule below ---
+\setbeamertemplate{section page}{%
+  \vspace{0.35\paperheight}
+  \hspace{0.06\paperwidth}%
+  \begin{minipage}{0.88\paperwidth}
+    {\Large\bfseries\insertsectionhead\par}
+    \vspace{0.5em}
+    \textcolor{OliveRule}{\rule{0.75\paperwidth}{0.5pt}}
+  \end{minipage}
+}
+
+% --- Bullets: small square (top level), circle (sub), diamond (sub-sub) ---
+\setbeamertemplate{itemize item}{\raisebox{0.3ex}{\tiny\textbullet}}
+\setbeamertemplate{itemize subitem}{\raisebox{0.3ex}{\tiny$\circ$}}
+\setbeamertemplate{itemize subsubitem}{\raisebox{0.3ex}{\tiny$\diamond$}}
+
+% --- Custom commands ---
+
+% Inline citation (gray, small, bracketed)
+\newcommand{\cit}[1]{\textcolor{CiteGray}{\scriptsize [#1]}}
+
+% Optional switches (default title is small; these let you go larger if needed)
+\newcommand{\largeframetitle}{%
+  \setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[wd=\paperwidth,sep=0.6em,leftskip=0.7em]{frametitle}%
+      \strut\usebeamerfont{frametitle}\insertframetitle\strut%
+    \end{beamercolorbox}%
+  }%
+  \setbeamerfont{frametitle}{size=\large,series=\bfseries}%
+}
+\newcommand{\smallframetitle}{%
+  \setbeamertemplate{frametitle}{%
+    \nointerlineskip%
+    \begin{beamercolorbox}[wd=\paperwidth,sep=0.3em,leftskip=0.7em]{frametitle}%
+      \strut\usebeamerfont{frametitle}\insertframetitle\strut%
+    \end{beamercolorbox}%
+  }%
+  \setbeamerfont{frametitle}{size=\footnotesize,series=\bfseries}%
+}
+
+% --- Tables: academic style (booktabs default, no zebra striping) ---
+\renewcommand{\arraystretch}{1.1}
