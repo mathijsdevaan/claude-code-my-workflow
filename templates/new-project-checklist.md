@@ -140,27 +140,76 @@ git config user.name "Your Name"
 
 ---
 
-## Step 7 (optional, deferred): Push to GitHub
+## Step 7: Set up GitHub backup
 
-If you want a cloud backup and/or to work across machines, you can push the
-project to a private GitHub repo. This is **NOT required** for git to work —
-it's useful only if you want remote backup or collaboration.
+Now link this project to a private GitHub repo so commits are backed up off your
+Mac. Skip this only if you genuinely don't want cloud backup (rare — it's free
+and protects against laptop loss, disk failure, accidental `rm -rf`).
 
-Skip this for now if you haven't set up a GitHub connection from your Mac
-before. A separate setup guide will cover this when you need it.
+### 7a. Create the GitHub repo
+
+1. Go to https://github.com/new
+2. Repository name: match your folder name (e.g., `Peer-Promotion-RCT`)
+3. Visibility: **Private** (research data, drafts, and notes do not belong on
+   public GitHub)
+4. Do NOT initialize with README, .gitignore, or license — your local repo
+   already has content and adding these on GitHub creates merge conflicts
+5. Click "Create repository"
+6. On the next page, copy the HTTPS URL — it looks like:
+   `https://github.com/yourusername/Peer-Promotion-RCT.git`
+
+### 7b. Link local to remote
+
+In Terminal, in your project folder:
+
+```bash
+git remote add origin https://github.com/yourusername/Peer-Promotion-RCT.git
+```
+
+The word `origin` is the conventional name for "my main remote." You're telling
+git "when I say `origin`, I mean this GitHub URL."
+
+### 7c. First push
+
+```bash
+git push -u origin main
+```
+
+Breakdown:
+- `-u origin main` sets the **default** remote and branch, so future pushes can
+  be just `git push` (no arguments)
+- You only need the `-u` flag once, on the first push
+
+If this is your first push from this Mac, GitHub will ask for authentication.
+The modern method is a **Personal Access Token (PAT)** — a password substitute.
+See https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+for the current setup procedure. Save the PAT in your Mac keychain when
+prompted, and you won't need to re-enter it.
+
+### 7d. Verify
+
+```bash
+git status
+```
+
+Should say "Your branch is up to date with 'origin/main'." That means your local
+and GitHub are in sync.
+
+Open your GitHub repo in a browser — you should see your files.
 
 ---
 
 # Day-to-day git workflow
 
-You've made your initial commit. As you work, save snapshots periodically. A
-reasonable rhythm for solo research:
+You've made your initial commit and set up backup. As you work, save snapshots
+periodically and push them to GitHub. A reasonable rhythm for solo research:
 
-- After finishing a meaningful chunk of work (not every file save)
-- Before making a risky change (so you can roll back)
-- End of the day
+- **Mid-session:** `git add .` + `git commit -m "..."` after finishing a
+  meaningful chunk of work (not every file save)
+- **Before a risky change:** commit first so you can roll back
+- **End of day:** one final commit AND a push to GitHub for off-site backup
 
-Each time:
+Each snapshot:
 
 ```bash
 git add .
@@ -173,8 +222,18 @@ Example commit messages:
 - "Rewrite §3 identification argument"
 - "Respond to R1.2 comment in manuscript"
 
-That's it. You don't need branches, merges, pull requests, or anything else for
-solo research work. Just snapshots with descriptive messages.
+End-of-day backup:
+
+```bash
+git push
+```
+
+That's it. One command, no arguments (because `-u` was set in Step 7c). You
+don't need branches, merges, pull requests, or anything else for solo research
+work. Just: commit during the day, push at the end.
+
+**If you forget to push for a few days:** no harm done. All your commits still
+live locally. `git push` catches GitHub up with everything at once.
 
 ---
 
