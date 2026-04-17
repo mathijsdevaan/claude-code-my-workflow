@@ -109,7 +109,36 @@ rm -f references/reference-deck-*.pdf   # only if you don't want the exemplars
 
 ---
 
-## Step 6: Make your first commit
+## Step 6: Set up the Box data folder (if this project uses data)
+
+**Skip this step if the project has no datasets** (e.g., a pure theory paper,
+a teaching deck, a non-empirical exec-ed session).
+
+Otherwise:
+
+1. Open Box (browser or Mac app).
+2. Create a folder in Box at `Research/[project-name]/` — match the project
+   folder name exactly (e.g., `Peer-Promotion-RCT`).
+3. Inside the Box folder, create subfolders as needed: `raw/`, `processed/`,
+   `intermediate/`, `archive/`.
+4. Verify the folder syncs to your Mac. In Terminal:
+   ```bash
+   ls ~/Library/CloudStorage/Box-Box/Research/[project-name]/
+   ```
+   If the folder appears, Box has synced it locally. If not, wait a minute
+   and retry, or open the Box app to force sync.
+5. In this project folder, open `data/PROVENANCE.md` and fill in:
+   - The Box path at the top
+   - Today's date as "Last sync verified"
+
+Data files (raw, processed, intermediate) live **in Box, not in this
+project folder**. The `.gitignore` and pre-commit hook are configured to
+prevent accidental commits of data. See `.claude/rules/data-storage.md`
+for the full convention.
+
+---
+
+## Step 7: Make your first commit
 
 A "commit" is a snapshot git saves. Your first commit marks "the moment this
 project was born."
@@ -140,13 +169,13 @@ git config user.name "Your Name"
 
 ---
 
-## Step 7: Set up GitHub backup
+## Step 8: Set up GitHub backup
 
 Now link this project to a private GitHub repo so commits are backed up off your
 Mac. Skip this only if you genuinely don't want cloud backup (rare — it's free
 and protects against laptop loss, disk failure, accidental `rm -rf`).
 
-### 7a. Create the GitHub repo
+### 8a. Create the GitHub repo
 
 1. Go to https://github.com/new
 2. Repository name: match your folder name (e.g., `Peer-Promotion-RCT`)
@@ -158,7 +187,7 @@ and protects against laptop loss, disk failure, accidental `rm -rf`).
 6. On the next page, copy the HTTPS URL — it looks like:
    `https://github.com/yourusername/Peer-Promotion-RCT.git`
 
-### 7b. Link local to remote
+### 8b. Link local to remote
 
 In Terminal, in your project folder:
 
@@ -169,7 +198,7 @@ git remote add origin https://github.com/yourusername/Peer-Promotion-RCT.git
 The word `origin` is the conventional name for "my main remote." You're telling
 git "when I say `origin`, I mean this GitHub URL."
 
-### 7c. First push
+### 8c. First push
 
 ```bash
 git push -u origin main
@@ -186,7 +215,7 @@ See https://docs.github.com/en/authentication/keeping-your-account-and-data-secu
 for the current setup procedure. Save the PAT in your Mac keychain when
 prompted, and you won't need to re-enter it.
 
-### 7d. Verify
+### 8d. Verify
 
 ```bash
 git status
@@ -228,7 +257,7 @@ End-of-day backup:
 git push
 ```
 
-That's it. One command, no arguments (because `-u` was set in Step 7c). You
+That's it. One command, no arguments (because `-u` was set in Step 8c). You
 don't need branches, merges, pull requests, or anything else for solo research
 work. Just: commit during the day, push at the end.
 

@@ -48,9 +48,23 @@ CLAUDE.local.md
 *.swo
 *~
 
-# Quarto rendering artifacts
-.quarto/
-
-# Output artifacts — uncomment lines below based on your preference
-# *.rds
-# output/**/*.rds
+# Data files — actual data lives in Box, not in git
+# See .claude/rules/data-storage.md for the convention.
+# data/PROVENANCE.md is kept; data payloads are not.
+data/raw/
+data/processed/
+data/intermediate/
+data/archive/
+data/*.csv
+data/*.RData
+data/*.Rdata
+data/*.rds
+data/*.dta
+data/*.sav
+data/*.zsav
+data/*.feather
+data/*.parquet
+data/*.xlsx
+data/*.xls
+# Common-sense catch: any large binary that slipped past, blocked by the
+# pre-commit hook at scripts/git-hooks/pre-commit.
