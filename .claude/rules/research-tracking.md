@@ -5,9 +5,6 @@ paths:
 
 # Research Tracking: Hypotheses, Insights, Decisions
 
-Adapted from Scott Cunningham's MixtapeTools GTD harness
-(https://github.com/scunning1975/MixtapeTools).
-
 **The tracker is the project's evidentiary memory.** Findings don't exist until
 filed. File through `/research-log`, which enforces the formats in
 `templates/research-tracker/`.

@@ -65,3 +65,12 @@ User asked for a conflict audit before committing; six friction points found, fi
 6. MEMORY.md contradiction resolved per user decision: session logs mandatory for ALL work including template sessions; superseding entry documents that forks stay clean via new_project.sh cleanup.
 
 Deferred (noted, not requested): /interview-me vs /research-log interview-style inconsistency; pruning always-on rules (both slide themes + meta-governance, ~710 lines) in child projects.
+
+## Reference cleanup (same session, post-merge)
+
+User asked to clean up Pedro Sant'Anna and Scott Cunningham references in the docs:
+- README.md rewritten (282 → 121 lines): now describes THIS repo accurately (8 agents / 25 skills / 21 rules / 7 hooks), quick-start via /new-project, single Credits section covering Pedro's original template and Cunningham's adopted patterns. Skill list intentionally NOT duplicated — points to CLAUDE.md's table (single source of truth, prevents drift).
+- meta-governance.md: 4 Emory/Econ-730 examples updated to this repo's context.
+- templates/skill-template.md: psantanna.com guide link → official skills docs.
+- Inline "Adapted from MixtapeTools" lines stripped from 8 operational files (agent, 2 rules, 4 skills, tracker README) and MEMORY.md tails trimmed — attribution consolidated in README Credits. Shklovsky/defamiliarization frame kept in /blindspot (it's the concept, not a repo credit).
+- Historical records (quality_reports/ plans, session logs, merge reports) intentionally untouched.

@@ -12,8 +12,7 @@ paths:
 
 Claude cannot eyeball where a curve passes or whether a label fits a gap. The
 compiler catches none of these collisions. Replace visual intuition with
-arithmetic. (Anti-collision math adapted from Scott Cunningham's MixtapeTools,
-https://github.com/scunning1975/MixtapeTools.)
+arithmetic.
 
 ### Coordinate map (mandatory)
 

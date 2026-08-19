@@ -7,9 +7,7 @@ allowed-tools: ["Read", "Write", "Edit", "Grep", "Glob", "Bash", "AskUserQuestio
 
 # Research Log
 
-Interrogation-driven filing into `research/`. Adapted from Scott Cunningham's
-MixtapeTools GTD harness (https://github.com/scunning1975/MixtapeTools).
-Formats live in `templates/research-tracker/`; the status machine lives in
+Interrogation-driven filing into `research/`. Formats live in `templates/research-tracker/`; the status machine lives in
 `.claude/rules/research-tracking.md` — its hard rules override anything else.
 
 **Setup check (all modes):** if `research/hypotheses/` doesn't exist, create

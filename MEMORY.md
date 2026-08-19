@@ -35,13 +35,13 @@ When a mistake is corrected, append a `[LEARN:category]` entry below.
 
 [LEARN:design] Generic means working for any academic workflow: pure LaTeX (no Quarto), pure R (no LaTeX), Python/Jupyter, any domain (not just econometrics). Test recommendations across use cases.
 
-[LEARN:design] Hook only silent failures (plausible-but-wrong output, e.g. stale derived file); visible failures (missing figure breaks compile) fix themselves → fewer, higher-value hooks. (Via Cunningham's MixtapeTools.)
+[LEARN:design] Hook only silent failures (plausible-but-wrong output, e.g. stale derived file); visible failures (missing figure breaks compile) fix themselves → fewer, higher-value hooks.
 
-[LEARN:design] Session isolation is typed, not blanket: isolate when auditing IMPLEMENTATION (the Claude that built the code rationalizes its choices → fresh subagent), don't isolate when auditing PERCEPTION (your own reading of output). (Via MixtapeTools.)
+[LEARN:design] Session isolation is typed, not blanket: isolate when auditing IMPLEMENTATION (the Claude that built the code rationalizes its choices → fresh subagent), don't isolate when auditing PERCEPTION (your own reading of output).
 
-[LEARN:design] Where the model lacks a capability (eyeballing curve positions, label widths), replace perception with arithmetic: supply the formula, a lookup table, and a worked example → reliable reviews. (Via MixtapeTools.)
+[LEARN:design] Where the model lacks a capability (eyeballing curve positions, label widths), replace perception with arithmetic: supply the formula, a lookup table, and a worked example → reliable reviews.
 
-[LEARN:workflow] Falsification-gated status tracking: a hypothesis cannot reach "confirmed" without a passing falsification test written BEFORE the analysis ran; first confirming evidence only moves it to "testing" → claims are earned, not asserted. (Via MixtapeTools GTD harness.)
+[LEARN:workflow] Falsification-gated status tracking: a hypothesis cannot reach "confirmed" without a passing falsification test written BEFORE the analysis ran; first confirming evidence only moves it to "testing" → claims are earned, not asserted.
 
 ## File Organization
 

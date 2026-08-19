@@ -1,7 +1,7 @@
 # Research Tracker Starter Kit
 
-Lightweight hypothesis/insight/decision tracking, adapted from Scott Cunningham's
-MixtapeTools GTD harness (https://github.com/scunning1975/MixtapeTools).
+Lightweight hypothesis/insight/decision tracking: claims are filed as
+hypotheses, evidence as insights, and constraints as decisions.
 
 ## To instantiate in a project
 

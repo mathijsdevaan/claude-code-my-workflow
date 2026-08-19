@@ -7,9 +7,9 @@ argument-hint: "[path to figure/table/results] [what you think the main finding 
 
 # Blindspot: Make the Stone Stony Again
 
-Adapted from Scott Cunningham's MixtapeTools
-(https://github.com/scunning1975/MixtapeTools), itself inspired by Viktor
-Shklovsky's defamiliarization and Jason Fletcher's "own all the numbers" habit.
+The frame comes from Viktor Shklovsky's defamiliarization — art exists to make
+the stone stony again — applied to empirical research: see your own output as
+a stranger would, before the story you want to tell automates your perception.
 
 By the time you've spent months on a project, the main finding has collapsed
 your attention. Everything else in the output — the spike at t=1, the missing
