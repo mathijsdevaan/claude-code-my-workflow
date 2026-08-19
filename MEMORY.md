@@ -35,6 +35,14 @@ When a mistake is corrected, append a `[LEARN:category]` entry below.
 
 [LEARN:design] Generic means working for any academic workflow: pure LaTeX (no Quarto), pure R (no LaTeX), Python/Jupyter, any domain (not just econometrics). Test recommendations across use cases.
 
+[LEARN:design] Hook only silent failures (plausible-but-wrong output, e.g. stale derived file); visible failures (missing figure breaks compile) fix themselves → fewer, higher-value hooks. (Via Cunningham's MixtapeTools.)
+
+[LEARN:design] Session isolation is typed, not blanket: isolate when auditing IMPLEMENTATION (the Claude that built the code rationalizes its choices → fresh subagent), don't isolate when auditing PERCEPTION (your own reading of output). (Via MixtapeTools.)
+
+[LEARN:design] Where the model lacks a capability (eyeballing curve positions, label widths), replace perception with arithmetic: supply the formula, a lookup table, and a worked example → reliable reviews. (Via MixtapeTools.)
+
+[LEARN:workflow] Falsification-gated status tracking: a hypothesis cannot reach "confirmed" without a passing falsification test written BEFORE the analysis ran; first confirming evidence only moves it to "testing" → claims are earned, not asserted. (Via MixtapeTools GTD harness.)
+
 ## File Organization
 
 [LEARN:files] Specifications go in `quality_reports/specs/YYYY-MM-DD_description.md`, not scattered in root or other directories. Maintains structure.
@@ -69,4 +77,4 @@ When a mistake is corrected, append a `[LEARN:category]` entry below.
 
 [LEARN:meta] Dogfooding principles must be enforced: plan-first, spec-then-plan, quality gates, session logs → we follow our own guide.
 
-[LEARN:meta] Template development work (building infrastructure, docs) doesn't create session logs in quality_reports/ → those are for user work (slides, analysis), not meta-work. Keeps template clean for users who fork.
+[LEARN:meta] Session logs are mandatory for ALL work, including template/infrastructure sessions (per session-logging rule; decided 2026-08-19, superseding an earlier entry that exempted meta-work). Forks stay clean because scripts/new_project.sh deletes template session logs and plans on copy.

@@ -115,3 +115,4 @@ These are planned but not pre-committed. When reported, they should be flagged a
 3. **Generate the code skeleton AFTER the markdown is complete.** Skeleton must match the analysis plan exactly.
 4. **Do not pre-register analyses the user hasn't thought through.** If they can't describe it precisely, it goes in the exploratory section.
 5. **Respect the format.** aspredicted.org has a specific 8-field structure — preserve it.
+6. **Seed the hypothesis tracker.** After the preregistration is finalized, offer to file each preregistered hypothesis into `research/hypotheses/` via `/research-log conjecture` (the preregistered falsification tests become the "Kills It" entries).
