@@ -42,6 +42,10 @@ parts you'll most want to adapt.
   with hard loop limits and a 3-strikes circuit breaker.
 - **Quality gates.** Nothing ships below 80/100 (`scripts/quality_score.py`);
   90 for PRs. Rubrics live in `.claude/rules/quality-gates.md`.
+- **Durable PR records.** `/commit` runs a branch → PR → merge cycle, and every
+  PR body carries a detailed "What we did" narrative — problem, approach,
+  decisions (including rejected alternatives), deferred items — so the repo
+  history, not the chat transcript, is the record of each session's work.
 - **Context survival.** Hooks snapshot state before compaction and restore it
   after; a Stop hook enforces session logging; MEMORY.md accumulates `[LEARN]`
   entries across sessions.
