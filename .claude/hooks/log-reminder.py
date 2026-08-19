@@ -6,6 +6,10 @@ A Stop hook that tracks how many responses have passed since the session
 log was last updated. After a threshold, it blocks Claude from stopping
 and reminds it to update the session log.
 
+State is keyed by both project and session_id (from the hook input JSON),
+so two concurrent sessions in the same project cannot suppress or
+double-fire each other's reminders.
+
 Adapted from: https://gist.github.com/michaelewens/9a1bc5a97f3f9bbb79453e5b682df462
 
 Usage (in .claude/settings.json):
@@ -37,7 +41,7 @@ def get_state_dir() -> Path:
 
 
 def get_project_dir():
-    """Get project directory from stdin JSON or environment."""
+    """Get project directory and session id from stdin JSON."""
     try:
         hook_input = json.load(sys.stdin)
     except (json.JSONDecodeError, EOFError):
@@ -48,12 +52,13 @@ def get_project_dir():
     if hook_input.get("stop_hook_active", False):
         sys.exit(0)
 
-    return hook_input.get("cwd", ""), hook_input
+    session_id = str(hook_input.get("session_id") or "default")
+    return hook_input.get("cwd", ""), session_id, hook_input
 
 
-def get_state_path() -> Path:
-    """Return the state file path for the current project."""
-    return get_state_dir() / "log-reminder-state.json"
+def get_state_path(session_id: str) -> Path:
+    """Return the state file path for the current project and session."""
+    return get_state_dir() / f"log-reminder-state-{session_id}.json"
 
 
 def load_state(state_path: Path) -> dict:
@@ -85,11 +90,11 @@ def find_latest_log(project_dir: str) -> tuple[Path | None, float]:
 
 
 def main():
-    project_dir, hook_input = get_project_dir()
+    project_dir, session_id, hook_input = get_project_dir()
     if not project_dir:
         sys.exit(0)
 
-    state_path = get_state_path()
+    state_path = get_state_path(session_id)
     state = load_state(state_path)
 
     latest_log, current_mtime = find_latest_log(project_dir)
