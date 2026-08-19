@@ -12,7 +12,7 @@ Understanding this distinction is critical for deciding what to commit, what to 
 - We actively develop lecture slides, guides, and documentation
 - We accumulate learnings specific to our setup and workflow
 - We test new features and iterate on infrastructure
-- We have institutional context (Emory, econometrics, specific tools)
+- We have institutional context (UC Berkeley Haas, org behavior, specific tools)
 
 ### Identity 2: Public Template
 - Others fork this repo to bootstrap their own academic workflows
@@ -38,7 +38,7 @@ When creating or modifying content, ask:
 **SPECIFIC (keep local or gitignore):**
 - Machine-specific paths (`TEXINPUTS=../Preambles` on macOS)
 - Tool versions (`Quarto 1.3.x vs 1.4.x`)
-- Institutional requirements (Emory thesis format)
+- Institutional requirements (institution-specific formatting rules)
 - Personal preferences (90/100 quality gate for this project)
 - API keys, credentials, local workarounds
 
@@ -136,7 +136,7 @@ When creating or modifying content, ask:
 **Bad (too specific):**
 ```markdown
 # Beamer Compilation Rule
-Always use XeLaTeX with TEXINPATHS=../Preambles for Emory slides.
+Always use XeLaTeX with TEXINPUTS=../Preambles for Berkeley slides.
 ```
 
 **Good (framework-oriented):**
@@ -180,10 +180,10 @@ Configure bibliography location in CLAUDE.md:
 
 ### Templates Can Show Specific Examples
 
-It's okay for README and guide to say:
-> "This workflow was developed for Econ 730 at Emory University..."
+It's okay for the README to say:
+> "Forked from Pedro Sant'Anna's template, built for a PhD econometrics course..."
 
-As long as it's clear this is ONE example, not THE requirement.
+As long as it's clear this is provenance, not a requirement.
 
 ### CLAUDE.md Can Have Placeholders
 

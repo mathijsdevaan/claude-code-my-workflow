@@ -99,7 +99,7 @@ Beyond the basic fields shown above, skills support additional YAML frontmatter 
 - `${CLAUDE_SKILL_DIR}` — path to the skill's directory (for bundled supporting files)
 - `` `!git log --oneline -5` `` — dynamic command output injected when skill loads
 
-See the [guide's Skill Frontmatter Reference](https://psantanna.com/claude-code-my-workflow/workflow-guide.html#skill-frontmatter) for details and examples.
+See the [official skills documentation](https://code.claude.com/docs/en/skills) for details and examples.
 
 ---
 

@@ -69,7 +69,6 @@ and it is not resolved, STOP. Do not keep editing. Instead:
 elsewhere (e.g., a fresh overfull box after a fix) resets the counter. This rule
 overrides zero-warning perfectionism: the cost of stopping to ask is 2 minutes;
 the cost of spiraling is an hour of edits that make the file progressively worse.
-(Adapted from Scott Cunningham's MixtapeTools.)
 
 ## Important
 - **Always use XeLaTeX**, never pdflatex

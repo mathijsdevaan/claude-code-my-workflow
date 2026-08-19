@@ -53,8 +53,7 @@ Bibliography_base.bib  (repo root)
 
 Default mode (above) checks **internal consistency** — keys match, fields exist.
 `--verify` checks **external accuracy** — does each entry correctly describe a
-paper that actually exists? Adapted from Scott Cunningham's MixtapeTools
-`/bibcheck` (https://github.com/scunning1975/MixtapeTools).
+paper that actually exists?
 
 **Why one agent per entry:** a single agent verifying a whole .bib file gives
 the first 10–15 entries careful treatment and pattern-matches the rest. Narrow
