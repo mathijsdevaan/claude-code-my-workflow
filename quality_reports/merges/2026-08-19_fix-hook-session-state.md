@@ -31,9 +31,8 @@ MERGED
 - Output schema (`hookSpecificOutput.hookEventName` + `additionalContext`,
   10k-char cap) verified against the current Claude Code hooks docs before
   implementation; `session_id` confirmed present in the common hook input.
-- **Open follow-up (issue #4, manual action required):** `.claude/settings.json`
-  line ~96 — the PostToolUse matcher `"Bash|Task"` does not match the current
-  harness's subagent tool name (`Agent`). File is write-protected by
-  `protect-files.sh`; recommended manual edit: matcher → `"Bash|Task|Agent"`.
+- **Issue #4 resolved 2026-08-19:** `.claude/settings.json` PostToolUse matcher
+  updated to `"Bash|Task|Agent"` with the user's explicit one-time approval
+  (file is write-protected; future edits still require per-instance approval).
 - [LEARN:hooks] PostToolUse stdout with exit 0 is transcript-only; use
   hookSpecificOutput.additionalContext JSON to inject reminders into context.

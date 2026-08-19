@@ -31,3 +31,7 @@
 
 Deviations from plan: none — all steps executed as written. Issue #4 was
 planned as report-only and remains report-only.
+- Issue #4 closed: user gave explicit one-time approval to edit the
+  write-protected settings.json; PostToolUse matcher changed to
+  "Bash|Task|Agent" (line 96), JSON validated. User instruction: continue
+  to ask permission for every future settings.json edit.
