@@ -74,3 +74,7 @@ User asked to clean up Pedro Sant'Anna and Scott Cunningham references in the do
 - templates/skill-template.md: psantanna.com guide link → official skills docs.
 - Inline "Adapted from MixtapeTools" lines stripped from 8 operational files (agent, 2 rules, 4 skills, tracker README) and MEMORY.md tails trimmed — attribution consolidated in README Credits. Shklovsky/defamiliarization frame kept in /blindspot (it's the concept, not a repo credit).
 - Historical records (quality_reports/ plans, session logs, merge reports) intentionally untouched.
+
+## SEED/PAUL evaluation (same session)
+
+Evaluated ChristopherKahler/seed and /paul at user's request (postdoc suggestion). Verdict: not adopted — they duplicate the existing plan-first + orchestrator + spec-then-plan stack in a software-dev dialect, and installing them would create dueling orchestrators. Adopted two disciplines from PAUL into plan-first-workflow.md instead: (1) the four-field task test (files/action/verify/done), (2) plan closure — no orphan plans (planned-vs-actual reconciliation before COMPLETED, or explicit ABANDONED).
