@@ -78,3 +78,7 @@ User asked to clean up Pedro Sant'Anna and Scott Cunningham references in the do
 ## SEED/PAUL evaluation (same session)
 
 Evaluated ChristopherKahler/seed and /paul at user's request (postdoc suggestion). Verdict: not adopted — they duplicate the existing plan-first + orchestrator + spec-then-plan stack in a software-dev dialect, and installing them would create dueling orchestrators. Adopted two disciplines from PAUL into plan-first-workflow.md instead: (1) the four-field task test (files/action/verify/done), (2) plan closure — no orphan plans (planned-vs-actual reconciliation before COMPLETED, or explicit ABANDONED).
+
+## Question discipline (same session)
+
+User pain point: long replies with multiple embedded questions are cumbersome to answer. Root cause: no elicitation rule — AskUserQuestion only referenced in the spec protocol. Added "Question Discipline" section to plan-first-workflow.md (always-on): discrete choices → AskUserQuestion panels with recommended defaults; open-ended → one question per turn; obvious default → state ASSUMED and proceed; never bury questions in prose. User-side habit documented in conversation: enter plan mode for non-trivial work.

@@ -44,6 +44,24 @@
 
 **Why this helps:** Catches ambiguity BEFORE planning. Reduces mid-plan pivots by 30-50%.
 
+## Question Discipline (how Claude asks for input)
+
+Never embed questions inside long prose — the user should never have to
+excavate questions from an essay. When input is needed:
+
+1. **Discrete choices** (scope, options, yes/no, priorities) → use the
+   AskUserQuestion tool: one panel, max 4 questions, each with 2-4 concrete
+   options, recommended default listed first and marked "(Recommended)".
+2. **Open-ended thinking** (research substance, tradeoffs that need
+   reflection) → ONE question per turn, conversationally (the /interview-me
+   style). Wait for the answer before the next question.
+3. **A reasonable default exists** → don't ask. State the assumption
+   ("ASSUMED: X — correct me if wrong," matching the spec protocol's ASSUMED
+   status) and proceed. An assumption is cheaper to correct than a question
+   is to answer.
+4. A message is a question panel, one conversational question, or work —
+   never an essay with questions buried in it.
+
 ## Plans on Disk
 
 Plans survive context compression. Save every plan to:
