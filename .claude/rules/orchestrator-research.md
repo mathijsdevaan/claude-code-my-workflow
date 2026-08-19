@@ -9,6 +9,8 @@ paths:
 
 **For R scripts, simulations, and data analysis** -- use this simplified loop instead of the full multi-agent orchestrator.
 
+**Precedence:** in `explorations/`, the exploration-fast-track rule wins — 60/100 threshold, no plan required. This loop's gates apply to production code (`scripts/`, `Figures/`).
+
 ## The Simple Loop
 
 ```

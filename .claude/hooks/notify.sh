@@ -7,7 +7,9 @@ TITLE=$(echo "$INPUT" | jq -r '.title // "Claude Code"')
 
 case "$(uname -s)" in
   Darwin)
-    # Escape double quotes in message/title for osascript
+    # Escape backslashes first, then double quotes, for osascript
+    MESSAGE="${MESSAGE//\\/\\\\}"
+    TITLE="${TITLE//\\/\\\\}"
     MESSAGE="${MESSAGE//\"/\\\"}"
     TITLE="${TITLE//\"/\\\"}"
     osascript -e "display notification \"$MESSAGE\" with title \"$TITLE\"" 2>/dev/null

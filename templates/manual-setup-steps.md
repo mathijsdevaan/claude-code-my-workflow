@@ -114,7 +114,7 @@ EOF
 cd /tmp/theme-test && xelatex -interaction=nonstopmode test-teaching.tex
 
 # Academic theme test (requires Fira Sans)
-cp "~/Claude Projects/Claude Setup/Preambles/beamerthemeUCBerkeleyAcademic.sty" /tmp/theme-test/
+cp "~/Claude Projects/Claude Setup/Preambles/UCBerkeleyAcademic.sty" /tmp/theme-test/
 cat > /tmp/theme-test/test-academic.tex <<EOF
 \PassOptionsToPackage{table}{xcolor}
 \documentclass[aspectratio=169,10pt]{beamer}

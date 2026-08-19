@@ -4,7 +4,7 @@
      project, replace the [BRACKETED PLACEHOLDERS] below, pick ONE "Current State"
      variant and delete the others, and set the **Slide style** declaration.
      See templates/new-project-checklist.md for the full startup procedure.
-     Keep this file under ~150 lines — Claude loads it every session. -->
+     Keep this file under ~200 lines — Claude loads it every session. -->
 
 **Project:** [Project name — replace when copying this template for a new project]
 **Institution:** UC Berkeley, Haas School of Business
@@ -27,9 +27,13 @@
 ```
 [YOUR-PROJECT]/
 ├── CLAUDE.MD                    # This file
+├── MEMORY.md                    # Generic [LEARN] entries (committed)
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib        # Centralized bibliography
 ├── Figures/                     # Figures and images
+├── data/                        # Gitignored; PROVENANCE.md only (data lives in Box)
+├── research/                    # Hypothesis/insight/decision trackers
+├── docs/                        # Architecture decisions
 ├── Preambles/                   # LaTeX headers + Beamer themes
 ├── Slides/                      # Beamer .tex files
 ├── scripts/                     # Utility scripts + R code
@@ -119,7 +123,7 @@ Full conventions in `.claude/rules/teaching-slides.md`.
 | `\tableheadrow` | Gold background row | First row of tables |
 | `\tableheadcol{text}` | White bold column header | Table headers |
 
-### Academic (`beamerthemeUCBerkeleyAcademic.sty`)
+### Academic (`UCBerkeleyAcademic.sty`)
 
 For seminars, conference talks, and job talks. Dense, citation-heavy, modern sans-serif
 styling with dark red title bars and charcoal footer. Metropolis-based.

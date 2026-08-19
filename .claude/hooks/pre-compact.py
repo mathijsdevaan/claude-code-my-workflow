@@ -53,8 +53,8 @@ def find_active_plan(project_dir: str) -> dict | None:
     for plan_file in plan_files[:3]:  # Check last 3 plans
         content = plan_file.read_text()
 
-        # Skip completed plans
-        if "COMPLETED" in content.upper():
+        # Skip completed plans (match the Status line, not prose like "when completed")
+        if re.search(r"^(?:\*\*)?Status:?(?:\*\*)?:?\s*COMPLETED", content, re.M | re.I):
             continue
 
         # Extract status

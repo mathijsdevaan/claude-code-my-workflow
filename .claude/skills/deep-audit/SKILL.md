@@ -59,8 +59,8 @@ Focus: `.claude/skills/*/SKILL.md` and `.claude/rules/*.md`
 - All templates referenced in rules/guide exist in `templates/`
 
 #### Agent 4: Cross-Document Consistency
-Focus: `README.md`, `docs/index.html`, `docs/workflow-guide.html`
-- All feature counts agree across all 3 documents
+Focus: `README.md`, `CLAUDE.md`, `.claude/WORKFLOW_QUICK_REF.md`, `docs/architecture-decisions.md`
+- All feature counts agree across all documents
 - All links point to valid targets
 - License section matches LICENSE file
 - Directory tree matches actual structure

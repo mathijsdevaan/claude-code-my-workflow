@@ -32,7 +32,7 @@ NC = "\033[0m"  # No color
 VERIFY_EXTENSIONS = {
     ".tex": "compile with /compile-latex",
     ".qmd": "render with quarto render",
-    ".R": "run to verify output"
+    ".r": "run to verify output"
 }
 
 # Files to skip

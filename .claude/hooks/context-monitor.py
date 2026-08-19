@@ -89,7 +89,7 @@ def estimate_context_percentage() -> float:
     cache["tool_calls"] = tool_calls
     save_cache(cache)
 
-    # Heuristic: assume ~200 tool calls fills context (very rough estimate)
+    # Heuristic: assume ~150 tool calls fills context (very rough estimate)
     # This is intentionally conservative to trigger warnings early
     MAX_TOOL_CALLS = 150
 
