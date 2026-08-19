@@ -5,6 +5,11 @@ an MBA course, or an exec ed session — using this template as the base.
 
 Follow it every time you start something new. Takes about 5 minutes.
 
+> **Automated:** run `/new-project` in Claude Code (or
+> `./scripts/new_project.sh "Project-Name"` in Terminal) to execute Steps 1–3
+> and 5 automatically. This checklist remains the reference for what happens,
+> the manual steps (4, 6–8), and the git primer below.
+
 ---
 
 ## What git is, in one paragraph
@@ -26,8 +31,7 @@ Open Terminal. Navigate to where you keep your projects:
 cd ~/Claude\ Projects/
 ```
 
-Copy the template folder to a new name. Pick something descriptive — the paper's
-short title, the course name, or the session client:
+Copy the template folder to a new name. DO NOT CREATE A NEW FOLDER MANUALLY. Pick something descriptive — the paper's short title, the course name, or the session client:
 
 ```bash
 cp -R "Claude Setup" "Peer-Promotion-RCT"

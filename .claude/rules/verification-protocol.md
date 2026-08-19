@@ -20,8 +20,11 @@ paths:
 
 ## For LaTeX/Beamer Slides:
 1. Compile with xelatex and check for errors
-2. Open the PDF to verify figures render (`open` on macOS, `xdg-open` on Linux)
-3. Check for overfull hbox warnings
+2. **Read the `.log` file directly** — do not rely only on grepping terminal
+   output (grep false-positives on package description strings and can miss
+   real warnings). Ignore "warning" inside package metadata.
+3. Open the PDF to verify figures render (`open` on macOS, `xdg-open` on Linux)
+4. Check for overfull hbox warnings
 
 ## For TikZ Diagrams in HTML/Quarto:
 1. Browsers **cannot** display PDF images inline — ALWAYS convert to SVG

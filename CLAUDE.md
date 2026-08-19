@@ -76,7 +76,7 @@ python scripts/quality_score.py Slides/file.tex
 | `/pedagogy-review [file]` | Narrative, notation, pacing review |
 | `/review-r [file]` | R code quality review |
 | `/slide-excellence [file]` | Combined multi-agent review |
-| `/validate-bib` | Cross-reference citations |
+| `/validate-bib [--verify]` | Cross-reference citations; --verify fact-checks entries |
 | `/devils-advocate` | Challenge slide design |
 | `/create-lecture` | Full lecture creation |
 | `/commit [msg]` | Stage, commit, PR, merge |
@@ -88,6 +88,10 @@ python scripts/quality_score.py Slides/file.tex
 | `/preregistration` | Scaffold aspredicted.org preregistration |
 | `/rct-toolkit` | RCT analysis starter (fixest + modelsummary) |
 | `/revise-resubmit` | R&R response tracker + cover letter |
+| `/research-log [mode]` | File hypothesis / insight / decision into research/ tracker |
+| `/blindspot [output]` | Pre-interpretation audit of results (vices + virtues) |
+| `/replication-audit` | Fresh-context correctness audit + R↔Python replication |
+| `/new-project [name]` | Bootstrap a new project from this template |
 | `/learn [skill-name]` | Extract discovery into persistent skill |
 | `/context-status` | Show session health + context usage |
 | `/deep-audit` | Repository-wide consistency audit |
@@ -150,6 +154,34 @@ Full conventions in `.claude/rules/academic-slides.md`.
 - Main draft: paper/main.tex
 - Analysis: code/03_analysis.R
 - Preregistration: rnr/preregistration.md (if RCT)
+- Hypothesis tracker: research/ (hypotheses, insights, decisions — file via /research-log)
+
+### Estimation Philosophy
+
+Do NOT express concern or excitement about point estimates. Do NOT interpret
+results as "good" or "bad" until the research design is intentional and settled.
+Objectivity means being attached to getting the design right, not to any
+particular finding. Run /blindspot before interpreting results bound for a
+paper, deck, or coauthor email (quick exploratory looks don't need it).
+
+When citing a hypothesis in paper or slide prose, check its status in
+research/hypotheses/INDEX.md first — citing a `testing` or `complicated`
+hypothesis as established is drift; flag it instead.
+
+### Key Decisions Made
+
+Research decisions only — infrastructure decisions go in docs/architecture-decisions.md.
+Mirror binding decisions from research/decisions/ here if they change how Claude works.
+
+| Date | Decision | Rationale |
+|------|----------|-----------|
+|      |          |           |
+
+### Dropped Analyses
+
+Things tried and abandoned, so Claude doesn't suggest them again.
+
+- [analysis] — dropped because [reason]
 -->
 
 <!-- MBA COURSE:

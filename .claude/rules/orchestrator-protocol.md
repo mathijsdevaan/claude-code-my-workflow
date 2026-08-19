@@ -30,7 +30,13 @@ Plan approved → orchestrator activates
 
 - **Main loop:** max 5 review-fix rounds
 - **Critic-fixer sub-loop:** max 5 rounds
-- **Verification retries:** max 2 attempts
+- **Verification retries:** max 2 attempts (re-running the verification step
+  itself, e.g. recompiling after an environment hiccup)
+- **Circuit breaker (3 strikes):** governs *fix attempts* for one persistent
+  error — after 3 different failed approaches to the *same* error, stop
+  editing: quote the exact error line, list the 3 approaches and why each
+  failed, and ask the user. A new error elsewhere resets the
+  counter. This overrides zero-warning perfectionism.
 - Never loop indefinitely
 
 ## "Just Do It" Mode
