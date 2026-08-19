@@ -17,6 +17,8 @@ When a mistake is corrected, append a `[LEARN:category]` entry below.
 
 [LEARN:workflow] Plans, specs, and session logs must live on disk (not just in conversation) to survive compression and session boundaries. Quality reports only at merge time.
 
+[LEARN:workflow] PR bodies must carry a detailed "What we did" narrative (problem, approach, decisions, deferred items) — the PR is the durable record of the session; 1-3 summary bullets alone are not enough.
+
 ## Documentation Standards
 
 [LEARN:documentation] When adding new features, update BOTH README and guide immediately to prevent documentation drift. Stale docs break user trust.
