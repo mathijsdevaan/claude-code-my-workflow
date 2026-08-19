@@ -18,7 +18,7 @@ Run an end-to-end data analysis in R: load, explore, analyze, and produce public
 - **Follow R code conventions** in `.claude/rules/r-code-conventions.md`
 - **Save all scripts** to `scripts/R/` with descriptive names
 - **Save all outputs** (figures, tables, RDS) to `output/`
-- **Use `saveRDS()`** for every computed object — Quarto slides may need them
+- **Use `saveRDS()`** for every computed object — downstream slide decks may need them
 - **Use project theme** for all figures (check for custom theme in `.claude/rules/`)
 - **Run r-reviewer** on the generated script before presenting results
 

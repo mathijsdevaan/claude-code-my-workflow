@@ -57,7 +57,7 @@ Create a beautiful, pedagogically excellent Beamer lecture deck.
 ### Phase 4: Figures & Code
 - R scripts following conventions
 - TikZ diagrams in Beamer source (single source of truth)
-- Save RDS for future Quarto integration
+- Save RDS so results can be reused without re-running analysis
 
 ### Phase 5: Polish & Compile
 - Full 3-pass compilation

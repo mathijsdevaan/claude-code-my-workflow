@@ -23,15 +23,13 @@ TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode FILENAME.tex 
 - Grep for `undefined citations` — these are errors
 - Verify PDF was generated: `ls -la FILENAME.pdf`
 
-### For `.qmd` files (Quarto slides):
+### For `.qmd` files (Quarto slides, if any exist):
 ```bash
-./scripts/sync_to_docs.sh LectureN 2>&1 | tail -20
+quarto render FILENAME.qmd --to html 2>&1 | tail -20
 ```
 - Check exit code
-- Verify HTML output exists in `docs/slides/`
+- Verify HTML output exists next to the source
 - Check for render warnings
-- **Plotly verification**: grep for `htmlwidget` count in rendered HTML
-- **Environment parity**: scan QMD for all `::: {.classname}` and verify each class exists in the theme SCSS
 
 ### For `.R` files (R scripts):
 ```bash
@@ -41,22 +39,10 @@ Rscript scripts/R/FILENAME.R 2>&1 | tail -20
 - Verify output files (PDF, RDS) were created
 - Check file sizes > 0
 
-### For `.svg` files (TikZ diagrams):
+### For `.svg` files (diagrams):
 - Read the file and check it starts with `<?xml` or `<svg`
 - Verify file size > 100 bytes (not empty/corrupted)
-- Check that corresponding references in QMD files point to existing files
-
-### TikZ Freshness Check (MANDATORY):
-**Before verifying any QMD that references TikZ SVGs:**
-1. Read the Beamer `.tex` file — extract all `\begin{tikzpicture}` blocks
-2. Read `Figures/LectureN/extract_tikz.tex` — extract all tikzpicture blocks
-3. Compare each block
-4. Report: `FRESH` or `STALE — N diagrams differ`
-
-### For deployment (`docs/` directory):
-- Check that `docs/slides/` contains the expected HTML files
-- Check that `docs/Figures/` is synced with `Figures/`
-- Verify image paths in HTML resolve to existing files
+- Check that documents referencing the SVG point to an existing file
 
 ### For bibliography:
 - Check that all `\cite` / `@key` references in modified files have entries in the .bib file
@@ -71,9 +57,6 @@ Rscript scripts/R/FILENAME.R 2>&1 | tail -20
 - **Warnings:** N overfull hbox, N undefined citations
 - **Output exists:** Yes / No
 - **Output size:** X KB / X MB
-- **TikZ freshness:** FRESH / STALE (N diagrams differ)
-- **Plotly charts:** N detected (expected: M)
-- **Environment parity:** All matched / Missing: [list]
 
 ### Summary
 - Total files checked: N
@@ -87,4 +70,3 @@ Rscript scripts/R/FILENAME.R 2>&1 | tail -20
 - Use `TEXINPUTS` and `BIBINPUTS` environment variables for LaTeX
 - Report ALL issues, even minor warnings
 - If a file fails to compile/render, capture and report the error message
-- TikZ freshness is a HARD GATE — stale SVGs should be flagged as failures
