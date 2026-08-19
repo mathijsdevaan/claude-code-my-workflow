@@ -54,6 +54,25 @@ quality_reports/plans/YYYY-MM-DD_short-description.md
 
 Format: Status (DRAFT/APPROVED/COMPLETED), approach, files to modify, verification steps.
 
+### The four-field task test
+
+Every task in a plan must specify four things: **files** (what gets touched),
+**action** (what changes), **verify** (how to check it), **done** (what
+completion looks like). If you can't specify all four, the task is too vague —
+split it or clarify it before presenting the plan.
+
+### Plan closure — no orphan plans
+
+A plan is not COMPLETED until the deviations from it are reconciled. Before
+marking a plan COMPLETED:
+
+1. Compare planned vs. actual: tasks added, dropped, or done differently
+2. Note the deviations (and why) in the session log
+3. Then set the plan's Status to COMPLETED
+
+Every plan gets closed — COMPLETED with deviations noted, or explicitly
+ABANDONED with a one-line reason. A plan left at APPROVED is an open loop.
+
 ## Context Management
 
 ### General Principles
