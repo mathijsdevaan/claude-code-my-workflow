@@ -84,7 +84,7 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] RDS filenames are descriptive
 - [ ] Both raw results AND summary tables saved
 - [ ] File paths use `file.path()` for cross-platform compatibility
-- [ ] Missing `saveRDS()` means Quarto slides can't render — flag as HIGH severity
+- [ ] Missing `saveRDS()` means downstream slide rendering can't reuse results — flag as HIGH severity
 
 **Flag:** Missing `saveRDS()` for any object referenced by slides.
 

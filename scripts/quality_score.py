@@ -6,9 +6,9 @@ Calculates objective quality scores (0-100) based on defined rubrics.
 Enforces quality gates: 80 (commit), 90 (PR), 95 (excellence).
 
 Usage:
-    python scripts/quality_score.py Quarto/Lecture6_Topic.qmd
-    python scripts/quality_score.py Quarto/Lecture6_Topic.qmd --summary
-    python scripts/quality_score.py Quarto/*.qmd
+    python scripts/quality_score.py Slides/Lecture6_Topic.tex
+    python scripts/quality_score.py Slides/Lecture6_Topic.tex --summary
+    python scripts/quality_score.py Slides/*.tex
     python scripts/quality_score.py Slides/Lecture01_Topic.tex
     python scripts/quality_score.py scripts/R/Lecture06_simulations.R
 """
@@ -676,11 +676,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Score a single Quarto file
-  python scripts/quality_score.py Quarto/Lecture6_Topic.qmd
+  # Score a single Beamer file
+  python scripts/quality_score.py Slides/Lecture6_Topic.tex
 
   # Score multiple files
-  python scripts/quality_score.py Quarto/*.qmd
+  python scripts/quality_score.py Slides/*.tex
 
   # Score a Beamer/LaTeX file
   python scripts/quality_score.py Slides/Lecture01_Topic.tex
@@ -689,10 +689,10 @@ Examples:
   python scripts/quality_score.py scripts/R/Lecture06_simulations.R
 
   # Summary only (no detailed issues)
-  python scripts/quality_score.py Quarto/Lecture6.qmd --summary
+  python scripts/quality_score.py Slides/Lecture6.tex --summary
 
   # Verbose output (include minor issues)
-  python scripts/quality_score.py Quarto/Lecture6.qmd --verbose
+  python scripts/quality_score.py Slides/Lecture6.tex --verbose
 
 Quality Thresholds:
   80/100 = Commit threshold (blocks if below)

@@ -136,4 +136,6 @@ may sit inside another. Compute each boundary independently.
 ## Single Source of Truth
 
 **The Beamer `.tex` file is the authoritative source for ALL TikZ diagrams.**
-Edit TikZ in the Beamer file FIRST, then copy verbatim to `extract_tikz.tex`.
+Edit TikZ in the Beamer file FIRST; if a diagram is ever extracted into a
+standalone file (e.g., for SVG conversion), copy it verbatim from the Beamer
+source and re-extract after every edit.

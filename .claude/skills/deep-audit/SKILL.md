@@ -28,13 +28,13 @@ Run a comprehensive consistency audit across the entire repository, fix all issu
 
 Launch these 4 agents simultaneously using `Task` with `subagent_type=general-purpose`:
 
-#### Agent 1: Guide Content Accuracy
-Focus: `guide/workflow-guide.qmd`
+#### Agent 1: Core Documentation Accuracy
+Focus: `README.md`, `CLAUDE.md`, and the `.claude/` tree (rules, skills, agents, hooks)
 - All numeric claims match reality (skill count, agent count, rule count, hook count)
 - All file paths mentioned actually exist on disk
 - All skill/agent/rule names match actual directory names
-- Code examples are syntactically correct
-- Cross-references and anchors resolve
+- Code examples and commands are syntactically correct
+- Internal cross-references resolve (rules referencing templates, skills referencing rules)
 - No stale counts from previous versions
 
 #### Agent 2: Hook Code Quality
@@ -73,7 +73,6 @@ Categorize each finding:
 - **False alarm**: Discard (document WHY it's false for future rounds)
 
 Common false alarms to watch for:
-- Quarto callout `## Title` inside `:::` divs — this is standard syntax, NOT a heading bug
 - `allowed-tools` linter warning — known linter bug (Claude Code issue #25380), field IS valid
 - Counts in old session logs — these are historical records, not user-facing docs
 
@@ -84,13 +83,11 @@ Apply fixes in parallel where possible. For each fix:
 2. Apply the fix
 3. Verify the fix (grep for stale values, check syntax)
 
-### PHASE 4: Re-render if Guide Changed
+### PHASE 4: Re-check Cross-Document Consistency
 
-If `guide/workflow-guide.qmd` was modified:
-```bash
-quarto render guide/workflow-guide.qmd
-cp guide/workflow-guide.html docs/workflow-guide.html
-```
+If `README.md` or `CLAUDE.md` was modified, re-grep the changed values
+(counts, names, paths) across the other documents (`CLAUDE.md`, `README.md`,
+`.claude/WORKFLOW_QUICK_REF.md`, `docs/`) to confirm they still agree.
 
 ### PHASE 5: Loop or Declare Clean
 
@@ -106,7 +103,7 @@ These are real bugs found across 7 rounds — check for these specifically:
 
 | Bug Pattern | Where to Check | What Went Wrong |
 |-------------|---------------|-----------------|
-| Stale counts ("19 skills" → "21") | Guide, README, landing page | Added skills but didn't update all mentions |
+| Stale counts ("19 skills" → "21") | README, CLAUDE.md, docs/ | Added skills but didn't update all mentions |
 | Hook exit codes | All Python hooks | Exit 2 in PreCompact silently discards stdout |
 | Hook field names | post-compact-restore.py | SessionStart uses `source`, not `type` |
 | State in /tmp/ | All Python hooks | Should use `~/.claude/sessions/<hash>/` |
@@ -114,7 +111,7 @@ These are real bugs found across 7 rounds — check for these specifically:
 | Missing fail-open | Python hooks `__main__` | Unhandled exception → exit 1 → confusing behavior |
 | Python 3.10+ syntax | Type hints like `dict | None` | Need `from __future__ import annotations` |
 | Missing directories | quality_reports/specs/ | Referenced in rules but never created |
-| Always-on rule listing | Guide + README | meta-governance omitted from listings |
+| Always-on rule listing | README + docs/ | meta-governance omitted from listings |
 | macOS-only commands | Skills, rules | `open` without `xdg-open` fallback |
 | Protected file blocking | settings.json edits | protect-files.sh blocks Edit/Write |
 
@@ -130,13 +127,12 @@ After each round, report:
 | # | Severity | File | Issue | Status |
 |---|----------|------|-------|--------|
 | 1 | Critical | file.py:42 | Description | Fixed |
-| 2 | Medium | file.qmd:100 | Description | Fixed |
+| 2 | Medium | file.md:100 | Description | Fixed |
 
 ### Verification
 - [ ] No stale counts (grep confirms)
 - [ ] All hooks have fail-open + future annotations
-- [ ] Guide renders successfully
-- [ ] docs/ updated
+- [ ] README/CLAUDE.md cross-checked against disk
 
 ### Result: [CLEAN | N issues remaining]
 ```
