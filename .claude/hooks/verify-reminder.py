@@ -6,7 +6,9 @@ Non-blocking reminder that fires on Write/Edit to academic files (.tex, .qmd, .R
 to remind about compiling/rendering before marking a task as done.
 
 Hook Event: PostToolUse (matcher: "Write|Edit")
-Returns: Exit code 0 (non-blocking, reminder visible but doesn't stop work)
+Returns: Exit code 0 (non-blocking) with JSON hookSpecificOutput.additionalContext
+so the reminder is injected into Claude's context (plain stdout from a
+PostToolUse hook is only shown in transcript mode and never reaches Claude).
 
 Skips:
 - Configuration files (.json, .yaml, .toml, etc.)
@@ -21,12 +23,6 @@ import os
 import sys
 import time
 from pathlib import Path
-
-# Colors for terminal output
-CYAN = "\033[0;36m"
-GREEN = "\033[0;32m"
-YELLOW = "\033[0;33m"
-NC = "\033[0m"  # No color
 
 # Files that need verification
 VERIFY_EXTENSIONS = {
@@ -134,10 +130,20 @@ def was_recently_reminded(file_path: str) -> bool:
 def format_reminder(file_path: str, action: str) -> str:
     """Format the verification reminder."""
     filename = Path(file_path).name
-    return f"""
-{CYAN}📋 Verification reminder:{NC} {filename}
-   → {GREEN}{action}{NC} before marking task complete
-"""
+    return (
+        f"Verification reminder: {filename} was modified - "
+        f"{action} before marking the task complete."
+    )
+
+
+def emit_reminder(message: str) -> None:
+    """Emit the reminder as PostToolUse additionalContext JSON."""
+    json.dump({
+        "hookSpecificOutput": {
+            "hookEventName": "PostToolUse",
+            "additionalContext": message
+        }
+    }, sys.stdout)
 
 
 def main() -> int:
@@ -169,7 +175,7 @@ def main() -> int:
         return 0
 
     # Show the reminder
-    print(format_reminder(file_path, action))
+    emit_reminder(format_reminder(file_path, action))
 
     return 0  # Non-blocking
 

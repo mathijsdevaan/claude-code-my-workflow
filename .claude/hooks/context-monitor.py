@@ -10,8 +10,16 @@ Monitors context usage and provides progressive warnings:
 Hook Event: PostToolUse (on common tools)
 Throttles to 60-second intervals when below warning threshold.
 
+Output: JSON with hookSpecificOutput.additionalContext so reminders are
+injected into Claude's context (plain stdout from a PostToolUse hook is
+only shown in transcript mode and never reaches Claude).
+
+State is keyed by session_id from the hook input, so tool-call counts and
+shown-warning flags reset with each new session instead of accumulating
+per project forever.
+
 Note: Since direct context % isn't available, this uses a heuristic based on
-conversation file size and tool call count.
+tool call count within the current session.
 """
 
 from __future__ import annotations
@@ -21,15 +29,6 @@ import os
 import sys
 import time
 from pathlib import Path
-from datetime import datetime
-
-# Colors for terminal output
-CYAN = "\033[0;36m"
-GREEN = "\033[0;32m"
-YELLOW = "\033[0;33m"
-RED = "\033[0;31m"
-MAGENTA = "\033[0;35m"
-NC = "\033[0m"  # No color
 
 # Thresholds (effective percentage, where 100% = auto-compact)
 LEARN_THRESHOLDS = [40, 55, 65]
@@ -39,23 +38,41 @@ THRESHOLD_CRITICAL = 90
 # Throttle interval in seconds (skip checks if below threshold and recent check)
 THROTTLE_INTERVAL = 60
 
+# Remove per-session cache files untouched for this long
+STALE_CACHE_SECONDS = 7 * 24 * 3600
+
 
 def get_session_dir() -> Path:
-    """Get the session directory for storing cache files."""
+    """Get the per-project directory for storing cache files."""
     project_dir = os.environ.get("CLAUDE_PROJECT_DIR", "")
     if not project_dir:
-        return Path.home() / ".claude" / "sessions" / "default"
-
-    import hashlib
-    project_hash = hashlib.md5(project_dir.encode()).hexdigest()[:8]
-    session_dir = Path.home() / ".claude" / "sessions" / project_hash
+        session_dir = Path.home() / ".claude" / "sessions" / "default"
+    else:
+        import hashlib
+        project_hash = hashlib.md5(project_dir.encode()).hexdigest()[:8]
+        session_dir = Path.home() / ".claude" / "sessions" / project_hash
     session_dir.mkdir(parents=True, exist_ok=True)
     return session_dir
 
 
-def read_cache() -> dict:
+def get_cache_file(session_id: str) -> Path:
+    """Get the cache file for this session (keyed by session_id)."""
+    return get_session_dir() / f"context-monitor-cache-{session_id}.json"
+
+
+def prune_stale_caches() -> None:
+    """Best-effort removal of cache files from long-finished sessions."""
+    now = time.time()
+    try:
+        for f in get_session_dir().glob("context-monitor-cache-*.json"):
+            if now - f.stat().st_mtime > STALE_CACHE_SECONDS:
+                f.unlink()
+    except OSError:
+        pass
+
+
+def read_cache(cache_file: Path) -> dict:
     """Read the context monitor cache."""
-    cache_file = get_session_dir() / "context-monitor-cache.json"
     if not cache_file.exists():
         return {}
     try:
@@ -64,32 +81,31 @@ def read_cache() -> dict:
         return {}
 
 
-def save_cache(data: dict) -> None:
+def save_cache(cache_file: Path, data: dict) -> None:
     """Save the context monitor cache."""
-    cache_file = get_session_dir() / "context-monitor-cache.json"
     try:
         cache_file.write_text(json.dumps(data, indent=2))
     except IOError:
         pass
 
 
-def estimate_context_percentage() -> float:
+def estimate_context_percentage(cache_file: Path) -> float:
     """
     Estimate context usage as a percentage.
 
     This is a heuristic since we don't have direct access to Claude's context
-    window. We use the tool call count as a proxy.
+    window. We use the session's tool call count as a proxy.
 
     Returns a value from 0-100 representing estimated context usage.
     """
-    cache = read_cache()
+    cache = read_cache(cache_file)
 
     # Increment tool call counter
     tool_calls = cache.get("tool_calls", 0) + 1
     cache["tool_calls"] = tool_calls
-    save_cache(cache)
+    save_cache(cache_file, cache)
 
-    # Heuristic: assume ~200 tool calls fills context (very rough estimate)
+    # Heuristic: assume ~150 tool calls fills context (very rough estimate)
     # This is intentionally conservative to trigger warnings early
     MAX_TOOL_CALLS = 150
 
@@ -97,9 +113,9 @@ def estimate_context_percentage() -> float:
     return percentage
 
 
-def is_throttled(percentage: float) -> bool:
+def is_throttled(cache_file: Path, percentage: float) -> bool:
     """Check if we should skip this check due to throttling."""
-    cache = read_cache()
+    cache = read_cache(cache_file)
     last_check = cache.get("last_check_time", 0)
     now = time.time()
 
@@ -109,13 +125,13 @@ def is_throttled(percentage: float) -> bool:
 
     # Update last check time
     cache["last_check_time"] = now
-    save_cache(cache)
+    save_cache(cache_file, cache)
     return False
 
 
-def get_shown_thresholds() -> dict:
+def get_shown_thresholds(cache_file: Path) -> dict:
     """Get which thresholds have already been shown in this session."""
-    cache = read_cache()
+    cache = read_cache(cache_file)
     return {
         "learn": cache.get("shown_learn", []),
         "warn_80": cache.get("shown_warn_80", False),
@@ -123,9 +139,10 @@ def get_shown_thresholds() -> dict:
     }
 
 
-def mark_threshold_shown(threshold_type: str, value: int | bool = True) -> None:
+def mark_threshold_shown(cache_file: Path, threshold_type: str,
+                         value: int | bool = True) -> None:
     """Mark a threshold as shown."""
-    cache = read_cache()
+    cache = read_cache(cache_file)
     if threshold_type == "learn":
         shown = cache.get("shown_learn", [])
         if value not in shown:
@@ -133,44 +150,46 @@ def mark_threshold_shown(threshold_type: str, value: int | bool = True) -> None:
         cache["shown_learn"] = shown
     else:
         cache[f"shown_{threshold_type}"] = value
-    save_cache(cache)
+    save_cache(cache_file, cache)
+
+
+def emit_reminder(message: str) -> None:
+    """Emit a reminder as PostToolUse additionalContext JSON."""
+    json.dump({
+        "hookSpecificOutput": {
+            "hookEventName": "PostToolUse",
+            "additionalContext": message
+        }
+    }, sys.stdout)
 
 
 def format_learn_reminder(percentage: float, threshold: int) -> str:
     """Format a /learn skill reminder."""
-    return f"""
-{CYAN}💡 Context at {percentage:.0f}%{NC}
-
-Non-obvious discovery or reusable workflow?
-→ Consider using {GREEN}/learn{NC} to capture it as a skill before context compacts.
-
-Skills are saved to {MAGENTA}.claude/skills/{NC} and persist across sessions.
-"""
+    return (
+        f"Context at ~{percentage:.0f}% (estimated). "
+        "If this session produced a non-obvious discovery or reusable workflow, "
+        "consider using /learn to capture it as a skill before context compacts. "
+        "Skills are saved to .claude/skills/ and persist across sessions."
+    )
 
 
 def format_warn_80(percentage: float) -> str:
     """Format the 80% warning message."""
-    return f"""
-{YELLOW}💡 Context at {percentage:.0f}%{NC}
-
-Auto-compact will handle context management automatically.
-No rush — just be aware that context will be summarized soon.
-"""
+    return (
+        f"Context at ~{percentage:.0f}% (estimated). "
+        "Auto-compact will handle context management automatically. "
+        "No rush - just be aware that context will be summarized soon."
+    )
 
 
 def format_warn_90(percentage: float) -> str:
     """Format the 90% critical warning message."""
-    return f"""
-{RED}⚠️  Context at {percentage:.0f}% — auto-compact approaching{NC}
-
-Complete current task with full quality. Do NOT cut corners or skip verification.
-No context is lost — auto-compact preserves important information.
-
-{YELLOW}Actions to consider:{NC}
-  • Save key decisions to the session log
-  • Ensure current plan status is updated
-  • Mark completed todos as done
-"""
+    return (
+        f"Context at ~{percentage:.0f}% (estimated) - auto-compact approaching. "
+        "Complete the current task with full quality; do NOT cut corners or skip "
+        "verification. Consider: save key decisions to the session log, update "
+        "the current plan status, and mark completed todos as done."
+    )
 
 
 def run_context_monitor() -> int:
@@ -181,32 +200,36 @@ def run_context_monitor() -> int:
     except (json.JSONDecodeError, IOError):
         hook_input = {}
 
+    session_id = str(hook_input.get("session_id") or "default")
+    cache_file = get_cache_file(session_id)
+    prune_stale_caches()
+
     # Estimate current context usage
-    percentage = estimate_context_percentage()
+    percentage = estimate_context_percentage(cache_file)
 
     # Check throttling
-    if is_throttled(percentage):
+    if is_throttled(cache_file, percentage):
         return 0
 
-    shown = get_shown_thresholds()
+    shown = get_shown_thresholds(cache_file)
 
     # Check /learn thresholds (40%, 55%, 65%)
     for threshold in LEARN_THRESHOLDS:
         if percentage >= threshold and threshold not in shown["learn"]:
-            print(format_learn_reminder(percentage, threshold))
-            mark_threshold_shown("learn", threshold)
+            emit_reminder(format_learn_reminder(percentage, threshold))
+            mark_threshold_shown(cache_file, "learn", threshold)
             return 0  # Only show one message at a time
 
     # Check 90% threshold (critical)
     if percentage >= THRESHOLD_CRITICAL and not shown["warn_90"]:
-        print(format_warn_90(percentage))
-        mark_threshold_shown("warn_90", True)
+        emit_reminder(format_warn_90(percentage))
+        mark_threshold_shown(cache_file, "warn_90", True)
         return 0  # Non-blocking warning (exit 2 would block Claude)
 
     # Check 80% threshold (info)
     if percentage >= THRESHOLD_WARN and not shown["warn_80"]:
-        print(format_warn_80(percentage))
-        mark_threshold_shown("warn_80", True)
+        emit_reminder(format_warn_80(percentage))
+        mark_threshold_shown(cache_file, "warn_80", True)
         return 0
 
     return 0
