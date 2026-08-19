@@ -8,7 +8,9 @@ paths:
 
 **Every lecture file MUST be reviewed before any commit or PR.**
 
-**CRITICAL RULE: The agent must NEVER apply changes directly. It proposes all changes for review first.**
+**CRITICAL RULE: The agent must NEVER apply changes directly outside an approved orchestrator run (see Precedence below). It proposes all changes for review first.**
+
+**Precedence:** within an approved orchestrator run (see `orchestrator-protocol.md`), plan approval counts as approval to apply proofreading fixes. The standalone `/proofread` skill retains the report-first, no-edit contract.
 
 ## What the Agent Checks
 

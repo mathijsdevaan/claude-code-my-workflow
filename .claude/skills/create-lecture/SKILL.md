@@ -32,7 +32,7 @@ Create a beautiful, pedagogically excellent Beamer lecture deck.
 ## WORKFLOW
 
 ### Phase 0: Intake & Context
-- Read knowledge base and creation guide
+- Read the knowledge base (`.claude/rules/knowledge-base-template.md`) and the active slide-style rule (`teaching-slides.md` or `academic-slides.md`)
 - Inventory provided materials (papers, slides, code)
 - Read previous lecture's structure and ending
 - State pedagogical goal, get user confirmation

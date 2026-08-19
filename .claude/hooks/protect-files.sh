@@ -2,6 +2,11 @@
 # Block accidental edits to protected files
 # Customize PROTECTED_PATTERNS below for your project
 INPUT=$(cat)
+# Fail-open if jq is missing, but say so — silent disablement of protection is worse
+if ! command -v jq >/dev/null 2>&1; then
+  echo "protect-files.sh: jq not found — file protection DISABLED" >&2
+  exit 0
+fi
 TOOL=$(echo "$INPUT" | jq -r '.tool_name')
 FILE=""
 

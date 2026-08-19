@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from datetime import datetime
@@ -69,13 +70,16 @@ def find_active_plan(project_dir: str) -> dict | None:
     latest_plan = plan_files[0]
     content = latest_plan.read_text()
 
-    # Extract status from plan content
+    # Extract status from plan content (match the Status line, not prose)
+    def _has_status(word: str) -> bool:
+        return bool(re.search(r"^(?:\*\*)?Status:?(?:\*\*)?:?\s*" + word, content, re.M | re.I))
+
     status = "unknown"
-    if "COMPLETED" in content.upper():
+    if _has_status("COMPLETED"):
         status = "completed"
-    elif "APPROVED" in content.upper():
+    elif _has_status("APPROVED"):
         status = "in_progress"
-    elif "DRAFT" in content.upper():
+    elif _has_status("DRAFT"):
         status = "draft"
 
     # Extract current task if present
