@@ -1,0 +1,39 @@
+# template_sync_manifest.txt — paths the TEMPLATE owns in every project.
+# Read by scripts/sync_from_template.sh (always the template's copy of this
+# file, so the boundary updates with the template itself).
+#
+# Format: one entry per line — "<mode> <path>". Blank lines and # comments
+# are ignored. Paths are relative to the repo root and must not contain spaces.
+#
+# Modes:
+#   mirror   Directory becomes an exact copy of the template's version.
+#            Files deleted upstream are deleted in the project too.
+#   overlay  Directory is synced per-subdirectory: every subdirectory that
+#            exists in the TEMPLATE is mirrored, but subdirectories that
+#            exist only in the project are left alone. Used for
+#            .claude/skills/ so project-local skills created by /learn
+#            survive a sync. (Consequence: a skill deleted from the
+#            template lingers in projects — remove it by hand.)
+#   file     Single file, copied over the project's version.
+#
+# Everything NOT listed here is project-owned and never touched:
+# CLAUDE.md, MEMORY.md, README.md, Bibliography_base.bib, Slides/, Figures/,
+# research/, data/, references/, explorations/, quality_reports/,
+# .claude/settings.local.json, .claude/state/.
+
+mirror .claude/rules
+mirror .claude/agents
+mirror .claude/hooks
+overlay .claude/skills
+mirror scripts
+mirror templates
+mirror Preambles
+mirror docs
+
+file .claude/WORKFLOW_QUICK_REF.md
+# settings.json is synced because it wires the hooks in .claude/hooks/ and
+# holds the shared permission allowlist. If a project has added its own
+# permissions to it, re-apply them after reviewing the sync diff.
+file .claude/settings.json
+file .gitignore
+file LICENSE

@@ -41,6 +41,14 @@ git branch -m main 2>/dev/null || true
 echo "==> Step 3: Installing large-file commit guard"
 git config core.hooksPath scripts/git-hooks
 
+echo "==> Recording template baseline (.template-version)"
+TEMPLATE_HASH="$(git -C "$TEMPLATE_DIR" rev-parse HEAD 2>/dev/null || echo 'unknown')"
+{
+  echo "template_commit=$TEMPLATE_HASH"
+  echo "template_dirty=no"
+  echo "synced_on=$(date +%Y-%m-%d)"
+} > .template-version
+
 echo "==> Step 5: Cleaning out template leftovers"
 rm -f quality_reports/session_logs/*.md
 rm -f quality_reports/plans/*.md

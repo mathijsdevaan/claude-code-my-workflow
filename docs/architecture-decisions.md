@@ -9,6 +9,49 @@ at the top; do not rewrite past entries — append corrections as new entries.
 
 ---
 
+## 2026-08-31: Manifest-driven template → project sync
+
+**Decision:** Template improvements propagate to existing projects via
+`scripts/sync_from_template.sh` + `/sync-template`, driven by
+`scripts/template_sync_manifest.txt`. The manifest declares which paths the
+template owns (rules, agents, hooks, skills, scripts, templates, Preambles,
+docs, settings.json, .gitignore, LICENSE); everything else is project-owned
+and never touched. The sync always lands staged on a
+`template-sync-YYYY-MM-DD` branch for human review; `.template-version`
+(written at project creation and each sync) records the baseline commit.
+`.claude/skills/` uses overlay mode: template skills are mirrored
+per-directory, project-local skills created by `/learn` are preserved.
+
+This amends the 2026-04-16 "Template-vs-project repo separation" entry's
+consequence that "template improvements don't auto-propagate" — propagation
+is now supported, but stays deliberate and reviewed, never automatic.
+
+**Alternatives considered:**
+- Shared git history (`git remote add template` + `merge
+  --allow-unrelated-histories`): rejected — painful first merge in every
+  project, recurring conflicts on customized files, entangled histories.
+- Submodules/symlinks: rejected previously (2026-04-16) — too much
+  mechanism for a solo researcher.
+- Mirroring `.claude/skills/` like other dirs: rejected — would delete
+  project-local skills created by `/learn`.
+
+**Consequences:**
+- The manifest and script are themselves template-owned, so the sync
+  mechanism improves with the template.
+- A skill deleted from the template lingers in projects (overlay mode);
+  the `/sync-template` review step flags this for manual removal.
+- `CLAUDE.md` drift is report-only: the skill diffs structure (e.g., new
+  skills-table rows) and offers edits, preserving project customization.
+- Projects that stray project content into template-owned directories
+  (e.g., analysis code in `scripts/`) would see it deleted — caught at
+  diff review, recoverable from git.
+
+**If revisiting:** The boundary is one text file
+(`scripts/template_sync_manifest.txt`); moving a directory across the
+template/project line is a one-line change there.
+
+---
+
 ## 2026-04-16: Template-vs-project repo separation
 
 **Decision:** This repo is **only** a template. Each research project,
