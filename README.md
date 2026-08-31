@@ -9,7 +9,7 @@ This is both a **working template** (copied to start each new project) and a
 **public reference** others can fork and adapt. See
 `.claude/rules/meta-governance.md` for how that dual nature is managed.
 
-**Last Updated:** 2026-08-19
+**Last Updated:** 2026-08-31
 
 ---
 
@@ -25,6 +25,18 @@ or run `/new-project` inside Claude Code. Either way you get a fresh git
 history, the large-file commit guard installed, and template leftovers removed.
 `templates/new-project-checklist.md` documents every step, including a
 git-for-beginners primer.
+
+**Updating an existing project with template improvements:** run
+`/sync-template` inside the project (or `scripts/sync_from_template.sh`
+directly). Projects have no git ancestry with the template (fresh history at
+copy time), so the sync is manifest-driven file copying: the paths listed in
+`scripts/template_sync_manifest.txt` — rules, skills, agents, hooks, scripts,
+templates, Preambles, docs — are template-owned and get updated; everything
+else (CLAUDE.md, slides, research trackers, bibliography, memory) is
+project-owned and never touched. The sync lands staged on a
+`template-sync-YYYY-MM-DD` branch for review, records the template commit in
+`.template-version`, and preserves project-local skills created by `/learn`.
+Throwing the branch away undoes it completely.
 
 **Forking from GitHub:** fork, clone, then open `CLAUDE.md` and replace the
 bracketed placeholders (project name, slide style). The rules, skills, agents,
@@ -56,7 +68,7 @@ parts you'll most want to adapt.
 
 ## What's Included
 
-**8 agents · 25 skills · 21 rules · 7 hooks.** The authoritative skill list
+**8 agents · 26 skills · 21 rules · 7 hooks.** The authoritative skill list
 with one-line descriptions is the Skills Quick Reference table in
 [CLAUDE.md](CLAUDE.md) — it is kept in sync with `.claude/skills/` on disk.
 
@@ -77,7 +89,8 @@ with one-line descriptions is the Skills Quick Reference table in
 - **Infrastructure** — plan-first workflow, orchestrator protocol, session
   logging, exploration sandbox with a fast-track quality bar, data-storage
   convention (raw data lives in UC Berkeley Box, never in git, with a
-  pre-commit large-file guard), and `/new-project` bootstrapping.
+  pre-commit large-file guard), `/new-project` bootstrapping, and
+  `/sync-template` for pulling template improvements into existing projects.
 
 ## Data Convention
 

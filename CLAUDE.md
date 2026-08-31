@@ -96,6 +96,7 @@ python scripts/quality_score.py Slides/file.tex
 | `/blindspot [output]` | Pre-interpretation audit of results (vices + virtues) |
 | `/replication-audit` | Fresh-context correctness audit + R↔Python replication |
 | `/new-project [name]` | Bootstrap a new project from this template |
+| `/sync-template` | Pull template infrastructure updates into an existing project |
 | `/learn [skill-name]` | Extract discovery into persistent skill |
 | `/context-status` | Show session health + context usage |
 | `/deep-audit` | Repository-wide consistency audit |
