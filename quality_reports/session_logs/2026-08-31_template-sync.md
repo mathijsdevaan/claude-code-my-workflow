@@ -55,10 +55,17 @@ template-owned. ASSUMED (flagged to user): `README.md` project-owned.
 
 ## Open Questions / Blockers
 
-- README.md ownership is ASSUMED project-owned — confirm with user if it
-  should sync instead.
+- ~~README.md ownership is ASSUMED project-owned~~ — RESOLVED 2026-09-01:
+  user confirmed project-owned (never synced). No manifest change needed.
 
 ## Next Steps
 
-- [ ] Run `/sync-template` in one real project (e.g., a recent one) as a
-      live shakedown before syncing the rest.
+- [x] Run `/sync-template` in one real project as a live shakedown —
+      done 2026-08-31 (`ai_mental_health`, synced to 345bb82, verified).
+
+## Incremental Work Log (post-session)
+
+**2026-09-01:** Postdoc question ("why not user-level ~/.claude skills?")
+answered and recorded as an ADR in `docs/architecture-decisions.md`
+(per-project vendored infrastructure over user-level shared skills).
+README.md ownership ruling confirmed by user: project-owned.
