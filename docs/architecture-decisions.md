@@ -9,6 +9,48 @@ at the top; do not rewrite past entries — append corrections as new entries.
 
 ---
 
+## 2026-09-01: Per-project vendored infrastructure over user-level shared skills
+
+**Decision:** Research infrastructure (skills, rules, agents, hooks,
+scripts, themes) stays versioned inside each project repo, propagated
+deliberately via `/sync-template` — NOT hoisted to the user level
+(`~/.claude/skills/` etc.), where every project would always run the
+latest version automatically.
+
+Prompted by a question from the user's postdoc: "why not put the setup
+one level up, so existing projects pull skills from the home folder and
+are always up to date?"
+
+**Alternatives considered:**
+- User-level (`~/.claude`) shared setup: rejected for result-shaping
+  infrastructure. "Always up to date" is a liability in research — a
+  skill change (e.g., different SE clustering in `rct-toolkit`) would
+  silently alter every project's behavior mid-study, including papers
+  mid-R&R. Project repos would also stop being self-contained (a clone
+  no longer carries its toolchain; which infrastructure version produced
+  a paper would be recorded nowhere), and a bad edit would break all
+  projects at once with no per-project revert.
+- Hybrid (adopted in principle): personal utility skills that never
+  shape research outputs (e.g., email drafting, briefings) live at user
+  level; anything result-shaping stays in the project. Template skills
+  are not promoted to user level while the template remains a public,
+  forkable artifact — hollowing it out weakens the template for no gain.
+
+**Consequences:**
+- Projects pin infrastructure at copy time (`.template-version`);
+  upgrades are opt-in, reviewed, per-project, and revertible.
+- Staying current costs one `/sync-template` run per project — the
+  price paid for reproducibility and controlled rollout.
+- Relative-path dependencies (`Preambles/`, `scripts/quality_score.py`,
+  hook wiring) keep working from a bare `git clone` on any machine.
+
+**If revisiting:** If syncing many active projects becomes a chore,
+add batch tooling around `/sync-template` rather than centralizing the
+skills themselves. If a template skill proves truly project-independent
+and wanted in non-template folders, copy (don't move) it to user level.
+
+---
+
 ## 2026-08-31: Manifest-driven template → project sync
 
 **Decision:** Template improvements propagate to existing projects via
