@@ -31,6 +31,8 @@ __pycache__/
 .Rhistory
 .RData
 .Rdata
+# Machine-local environment (e.g., BOX_DATA_ROOT data-path override)
+.Renviron
 
 # OS files
 .DS_Store
