@@ -9,6 +9,50 @@ at the top; do not rewrite past entries — append corrections as new entries.
 
 ---
 
+## 2026-09-04: Repository rebuilt to purge published private-project content
+
+**Decision:** A session log describing a private partner-firm research
+project had been committed to this public repository. The repository was
+deleted and recreated from cleaned local history, rather than redacted in
+a follow-up commit.
+
+**Alternatives considered:**
+- Redact forward (edit the file, amend the pull request body): rejected —
+  the content would remain in the merged pull request's diff and in
+  commits reachable by SHA, both of which GitHub serves indefinitely.
+- Force-push rewritten history: rejected for the same reason. Orphaned
+  commits and pull request file views survive a force-push; only GitHub
+  Support can garbage-collect them, on an unpredictable timeline.
+- Make the repository private: rejected — it exists to be a public
+  reference, and as a fork its visibility could not be changed without
+  detaching from upstream anyway.
+
+**Consequences:**
+- The content is verifiably gone: old commit SHAs return HTTP 422, the
+  pull request returns 404, repository code search returns no hits, and
+  the local reflog was expired and garbage-collected.
+- **Pull request numbering restarted at #1.** References in
+  `quality_reports/merges/` (#1, #3, #5, #7, #9, #11, #14) point at the
+  pre-rebuild repository and no longer resolve; the current PR #1 is an
+  unrelated change. Treat those numbers as historical labels, not links.
+- 22 pull request discussion threads were lost. Their substance survives
+  as files in `quality_reports/merges/`. Stars, forks, and watchers were
+  all zero, so nothing else was destroyed.
+- The GitHub fork link to the upstream template is gone. Attribution is
+  unaffected — it lives in `README.md` and the LICENSE, which is where it
+  needed to be carried regardless.
+- The repository's GitHub creation date now postdates the history it
+  contains (earliest commit 2026-04-02).
+
+**If revisiting:** Prevention is far cheaper than any of this — see the
+"Which Repo the Log Goes In" section of `.claude/rules/session-logging.md`,
+added the same day. Should it recur, delete-and-recreate remains the only
+self-serve complete remedy; the GitHub Support route (requesting garbage
+collection of unreachable objects) preserves numbering and history but
+takes days and leaves the content live in the meantime.
+
+---
+
 ## 2026-09-01: Per-project vendored infrastructure over user-level shared skills
 
 **Decision:** Research infrastructure (skills, rules, agents, hooks,
