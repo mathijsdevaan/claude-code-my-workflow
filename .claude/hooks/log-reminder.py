@@ -2,9 +2,15 @@
 """
 Session Log Reminder Hook for Claude Code
 
-A Stop hook that tracks how many responses have passed since the session
-log was last updated. After a threshold, it blocks Claude from stopping
-and reminds it to update the session log.
+A Stop hook that tracks how many responses have passed since the *current*
+session log was last updated. After a threshold, it blocks Claude from
+stopping and reminds it to update (or create) that log.
+
+"Current" means a log for today, per the naming convention
+quality_reports/session_logs/YYYY-MM-DD_description.md. A log from an
+earlier day is a finished record of different work, so the reminder never
+points Claude at one — it asks for a new log instead. (Naming a stale log
+caused Claude to append unrelated progress to a completed record.)
 
 State is keyed by both project and session_id (from the hook input JSON),
 so two concurrent sessions in the same project cannot suppress or
@@ -22,7 +28,7 @@ import json
 import sys
 import hashlib
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 THRESHOLD = 15
 
@@ -63,10 +69,15 @@ def get_state_path(session_id: str) -> Path:
 
 def load_state(state_path: Path) -> dict:
     """Load persisted state, or return defaults."""
+    defaults = {"counter": 0, "last_mtime": 0.0, "reminded": False}
     try:
-        return json.loads(state_path.read_text())
+        stored = json.loads(state_path.read_text())
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"counter": 0, "last_mtime": 0.0, "reminded": False, "no_log_reminded": False}
+        return defaults
+    if not isinstance(stored, dict):
+        return defaults
+    # Tolerate state written by an older version of this hook.
+    return {k: stored.get(k, v) for k, v in defaults.items()}
 
 
 def save_state(state_path: Path, state: dict):
@@ -75,18 +86,38 @@ def save_state(state_path: Path, state: dict):
     state_path.write_text(json.dumps(state))
 
 
-def find_latest_log(project_dir: str) -> tuple[Path | None, float]:
-    """Find the most recently modified .md file in session_logs/."""
+def find_current_log(project_dir: str, today: str, yesterday: str) -> tuple[Path | None, float]:
+    """Find the session log belonging to the CURRENT session, or None.
+
+    A log qualifies if its filename is dated today. As a concession to
+    sessions that run past midnight, a log dated yesterday also qualifies
+    if it was modified today — that means this session is still writing to
+    it. Logs from any earlier day are finished records of other work and
+    are deliberately ignored.
+    """
     log_dir = Path(project_dir) / "quality_reports" / "session_logs"
     if not log_dir.is_dir():
         return None, 0.0
 
-    md_files = list(log_dir.glob("*.md"))
-    if not md_files:
+    candidates = list(log_dir.glob(f"{today}_*.md"))
+
+    if not candidates:
+        for stale in log_dir.glob(f"{yesterday}_*.md"):
+            try:
+                mtime = stale.stat().st_mtime
+            except OSError:
+                continue
+            if datetime.fromtimestamp(mtime).strftime("%Y-%m-%d") == today:
+                candidates.append(stale)
+
+    if not candidates:
         return None, 0.0
 
-    latest = max(md_files, key=lambda f: f.stat().st_mtime)
-    return latest, latest.stat().st_mtime
+    try:
+        latest = max(candidates, key=lambda f: f.stat().st_mtime)
+        return latest, latest.stat().st_mtime
+    except OSError:
+        return None, 0.0
 
 
 def main():
@@ -97,47 +128,39 @@ def main():
     state_path = get_state_path(session_id)
     state = load_state(state_path)
 
-    latest_log, current_mtime = find_latest_log(project_dir)
-    today = datetime.now().strftime("%Y-%m-%d")
+    now = datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
 
-    # Case 1: No session log exists at all — remind once, then let Claude work
-    if latest_log is None:
-        if not state.get("no_log_reminded", False):
-            state["no_log_reminded"] = True
-            save_state(state_path, state)
-            output = {
-                "decision": "block",
-                "reason": (
-                    f"No session log exists yet. Create one at "
-                    f"quality_reports/session_logs/{today}_description.md "
-                    f"before continuing. Include the current goal and key context."
-                ),
-            }
-            json.dump(output, sys.stdout)
-        # Already reminded — let Claude proceed (it will create the log)
+    current_log, current_mtime = find_current_log(project_dir, today, yesterday)
+
+    # The current log was written since the last check — reset and stay quiet.
+    if current_log is not None and current_mtime != state["last_mtime"]:
+        save_state(state_path, {"counter": 0, "last_mtime": current_mtime, "reminded": False})
         sys.exit(0)
 
-    # Case 2: Log was updated since last check — reset everything
-    if current_mtime != state["last_mtime"]:
-        state = {"counter": 0, "last_mtime": current_mtime, "reminded": False, "no_log_reminded": False}
-        save_state(state_path, state)
-        sys.exit(0)
-
-    # Case 3: Log not updated — increment counter
     state["counter"] += 1
 
+    # Remind at most once per session, and only after the threshold — a short
+    # session that never warranted a log is never nagged.
     if state["counter"] >= THRESHOLD and not state["reminded"]:
         state["reminded"] = True
         save_state(state_path, state)
-        output = {
-            "decision": "block",
-            "reason": (
+        if current_log is None:
+            reason = (
+                f"SESSION LOG REMINDER: {state['counter']} responses with no session "
+                f"log for today. If this session's work is worth recording, create "
+                f"quality_reports/session_logs/{today}_description.md (see "
+                f".claude/rules/session-logging.md for what belongs in it, and what "
+                f"must not). Do not append to a log from an earlier day."
+            )
+        else:
+            reason = (
                 f"SESSION LOG REMINDER: {state['counter']} responses without "
                 f"updating the session log. Append your recent progress to "
-                f"{latest_log.name}."
-            ),
-        }
-        json.dump(output, sys.stdout)
+                f"{current_log.name}."
+            )
+        json.dump({"decision": "block", "reason": reason}, sys.stdout)
         sys.exit(0)
 
     save_state(state_path, state)
